@@ -2,7 +2,7 @@ import { Game } from "../../domain/gameModel";
 
 export const GAMES: Game[] = [
     {
-        id: "1",
+        id: "2",
         name: "God of War Ragnarök",
         stock: 7,
         price: 300000,
@@ -11,7 +11,7 @@ export const GAMES: Game[] = [
         imageUrl: "https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/4xJ8XB3bi888QTLZYdl7Oi0s.png"
     },
     {
-        id: "2",
+        id: "1",
         name: "God of War",
         stock: 5,
         price: 100000,
