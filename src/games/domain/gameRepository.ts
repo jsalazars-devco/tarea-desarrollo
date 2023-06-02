@@ -1,5 +1,6 @@
 import { Game } from "./gameModel";
 
 export interface GameRepository {
-  get(): Promise<Game[] | null>;
+    find(): Promise<Game[] | null>;
+    findById(gameId: string): Promise<Game | null>;
 }

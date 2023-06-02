@@ -7,5 +7,5 @@ export class Game {
         readonly consolesIds: number[],
         readonly categoriesIds: number[],
         readonly imageUrl: string
-    ){}
+    ) { }
 }

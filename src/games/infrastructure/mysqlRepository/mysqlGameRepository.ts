@@ -1,33 +1,30 @@
+import MysqlDatabaseConnection from "../../../shared/infrastructure/mysqlConnection";
 import { Game } from "../../domain/gameModel";
 import { GameRepository } from "../../domain/gameRepository";
-import { createConnection, Connection, RowDataPacket } from 'mysql2/promise';
+import { RowDataPacket } from 'mysql2/promise';
+import { FIND, FIND_BY_ID } from "./querys";
 
 export class MysqlGameRepository implements GameRepository {
-    async get(): Promise<Game[] | null> {
 
-        const connection: Connection = await createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'mysql1234',
-            database: 'tienda_videojuegos'
-        });
+    private connectToMysql: MysqlDatabaseConnection["connect"];
+    private closeConnectionToMysql: MysqlDatabaseConnection["close"];
+    private getMysqlConnection: MysqlDatabaseConnection["getConnection"];;
+
+    constructor(
+        private readonly mysqlDatabaseConnection: MysqlDatabaseConnection
+    ) {
+        this.connectToMysql = this.mysqlDatabaseConnection.connect.bind(this.mysqlDatabaseConnection);
+        this.closeConnectionToMysql = this.mysqlDatabaseConnection.close.bind(this.mysqlDatabaseConnection);
+        this.getMysqlConnection = this.mysqlDatabaseConnection.getConnection.bind(this.mysqlDatabaseConnection);
+    }
+
+    async find(): Promise<Game[] | null> {
+
+        await this.connectToMysql();
+        const connection = this.getMysqlConnection();
 
         try {
-            const query = `SELECT
-                                games.id,
-                                games.name,
-                                games.stock,
-                                games.price,
-                                GROUP_CONCAT(DISTINCT consoles.id) AS consolesIds,
-                                GROUP_CONCAT(DISTINCT categories.id) AS categoriesIds,
-                                games.imageUrl
-                            FROM games
-                            LEFT JOIN game_consoles ON games.id = game_consoles.game_id
-                            LEFT JOIN consoles ON game_consoles.console_id = consoles.id
-                            LEFT JOIN game_categories ON games.id = game_categories.game_id
-                            LEFT JOIN categories ON game_categories.category_id = categories.id
-                            GROUP BY games.id
-                            `;
+            const query = FIND;
             const [gameRows, _] = await connection.execute<RowDataPacket[]>(query);
             if (!Array.isArray(gameRows)) {
                 const err: any = new Error('Error in database');
@@ -35,31 +32,17 @@ export class MysqlGameRepository implements GameRepository {
                 throw err;
             }
 
-            const games = gameRows.map((data: RowDataPacket) => ({
-                id: data.id,
-                name: data.name,
-                stock: data.stock,
-                price: data.price,
-                consolesIds: data.consolesIds ? data.consolesIds.split(',').map(Number) : [],
-                categoriesIds: data.categoriesIds ? data.categoriesIds.split(',').map(Number) : [],
-                imageUrl: data.imageUrl
-            }));
-
-            if (!games) {
-                return null;
-            }
-
-            const gamesInRepository = games.map(game => new Game(
+            const games = gameRows.map((game: RowDataPacket) => new Game(
                 game.id,
                 game.name,
                 game.stock,
                 game.price,
-                game.consolesIds,
-                game.categoriesIds,
+                game.consolesIds ? game.consolesIds.split(',') : [],
+                game.categoriesIds ? game.categoriesIds.split(',') : [],
                 game.imageUrl
             ));
 
-            return gamesInRepository;
+            return games;
 
         } catch (error) {
             console.error('Error executing query:', error);
@@ -67,7 +50,38 @@ export class MysqlGameRepository implements GameRepository {
             err.status = 500;
             throw err;
         } finally {
-            await connection.end();
+            await this.closeConnectionToMysql();
+        }
+    }
+
+    async findById(gameId: string): Promise<Game | null> {
+
+        await this.connectToMysql();
+        const connection = this.getMysqlConnection();
+
+        try {
+            const query = FIND_BY_ID;
+            const [gameRow, _] = await connection.execute<RowDataPacket[]>(query, [gameId]);
+
+            const game = new Game(
+                gameRow[0].id,
+                gameRow[0].name,
+                gameRow[0].stock,
+                gameRow[0].price,
+                gameRow[0].consolesIds ? gameRow[0].consolesIds.split(',') : [],
+                gameRow[0].categoriesIds ? gameRow[0].categoriesIds.split(',') : [],
+                gameRow[0].imageUrl
+            );
+
+            return game;
+
+        } catch (error) {
+            console.error('Error executing query:', error);
+            const err: any = new Error('Error in database');
+            err.status = 500;
+            throw err;
+        } finally {
+            await this.closeConnectionToMysql();
         }
     }
 }

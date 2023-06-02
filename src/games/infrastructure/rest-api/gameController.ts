@@ -1,16 +1,22 @@
 import { Request, Response } from "express";
-import { GamesGetter } from "../../application/gamesGetter";
+import { GameManager } from "../../application/gameManager";
 
 export class GameController {
 
-  constructor(
-    private readonly gamesGetter: GamesGetter
-  ){}
+    constructor(
+        private readonly gameManager: GameManager
+    ) { }
 
-  async sendGames(_req: Request, res: Response) {
-    const games = await this.gamesGetter.getGames();
-    res.status(200);
-    res.send(games);
-  }
+    async findGames(_req: Request, res: Response) {
+        const games = await this.gameManager.findGames();
+        res.status(200);
+        res.send(games);
+    }
+
+    async findGameById(req: Request, res: Response) {
+        const game = await this.gameManager.findGameById(req.params.id);
+        res.status(200);
+        res.send(game);
+    }
 
 }

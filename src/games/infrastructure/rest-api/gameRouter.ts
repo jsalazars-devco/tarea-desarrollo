@@ -5,7 +5,12 @@ const gameRouter = express.Router();
 
 gameRouter.get(
     "/",
-    gameController.sendGames.bind(gameController)
+    gameController.findGames.bind(gameController)
 );
 
-export { gameRouter }
+gameRouter.get(
+    "/:id",
+    gameController.findGameById.bind(gameController)
+);
+
+export { gameRouter };
