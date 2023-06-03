@@ -11,7 +11,6 @@ const initApp = () => {
     app.use("/api/games", gameRouter);
 
     const port = PORT;
-
     app.listen(port, () => {
         console.log(`[APP] - Starting application on port ${port}`);
     });
