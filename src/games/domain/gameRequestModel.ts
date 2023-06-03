@@ -1,19 +1,14 @@
-import ErrorWithStatus from "../../shared/domain/errorWithStatus";
+import { Game } from './gameModel';
+import ErrorWithStatus from '../../shared/domain/errorWithStatus';
 
-export class Game {
+export class GameRequest implements Omit<Game, 'id'> {
     constructor(
-        readonly id: number,
         readonly name: string,
         readonly stock: number,
         readonly price: number,
         readonly imageUrl: string,
     ) {
-        if (Number.isNaN(id) || id < 0) {
-            const error = new ErrorWithStatus('Invalid ID: Must be a positive number');
-            error.status = 403;
-            throw error;
-        }
-        else if (
+        if (
             typeof name !== 'string'
             || Number.isNaN(stock)
             || typeof stock !== 'number'

@@ -22,4 +22,11 @@ export const GAMES: Game[] = [
         imageUrl: "https://image.api.playstation.com/vulcan/ap/rnd/202107/3100/1dy5w3SNiJnXjP8YvmydCL9X.png",
         id: 3,
     },
+    {
+        name: "Zelda: BoTW",
+        stock: 2,
+        price: 300000,
+        imageUrl: "https://image.api.playstation.com/vulcan/ap/rnd/202107/3100/1dy5w3SNiJnXjP8YvmydCL9X.png",
+        id: 4,
+    }
 ];
