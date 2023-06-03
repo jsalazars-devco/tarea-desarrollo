@@ -103,6 +103,16 @@ export class MysqlGameRepository implements GameRepository {
             const queryFindByName = FIND_BY_NAME;
             const [data, ___] = await connection.execute<RowDataPacket[]>(queryFindByName, [verifiedGame.name]);
             if (data.length > 0) {
+                if (
+                    data[0].name !== verifiedGame.name
+                    || data[0].stock !== verifiedGame.stock
+                    || data[0].price !== verifiedGame.price
+                    || data[0].imageUrl !== verifiedGame.imageUrl
+                ) {
+                    const error = new ErrorWithStatus('To modify the game, try the PUT /api/game/{gameId} endpoint');
+                    error.status = 403;
+                    throw error;
+                }
                 const gameAlreadyOnDb = new Game(
                     data[0].name,
                     data[0].stock,
