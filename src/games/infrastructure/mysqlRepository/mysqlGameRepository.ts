@@ -144,7 +144,7 @@ export class MysqlGameRepository implements GameRepository {
         }
     }
 
-    async updateById(gameId: number, game: GameRequest): Promise<[Game, number] | null> {
+    async updateById(gameId: number, game: GameRequest): Promise<Game | null> {
         await this.connectToMysql();
         const connection = this.getMysqlConnection();
 
@@ -172,35 +172,62 @@ export class MysqlGameRepository implements GameRepository {
                     data[0].imageUrl,
                 );
 
-                return [updatedGame, 200];
+                return updatedGame;
             }
-            else {
-                const newData = new Game(
-                    gameId,
-                    game.name,
-                    game.stock,
-                    game.price,
-                    game.imageUrl,
-                );
 
-                const values = Object.values(newData);
+            return null;
 
-                const [,] = await connection.execute<ResultSetHeader>(CREATE_WITH_ID, values);
-                const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [gameId]);
-
-                const createdGame = new Game(
-                    data[0].id,
-                    data[0].name,
-                    data[0].stock,
-                    data[0].price,
-                    data[0].imageUrl,
-                );
-
-                return [createdGame, 201];
-            }
         } catch (error: any) {
             if (error.status === 403) {
                 const err = error;
+                throw err;
+            }
+            console.error('Error executing query:', error);
+            const err = new ErrorWithStatus('Error in database');
+            err.status = 500;
+            throw err;
+        } finally {
+            await this.closeConnectionToMysql();
+        }
+    }
+
+    async createWithId(gameId: number, game: GameRequest): Promise<Game | null> {
+        await this.connectToMysql();
+        const connection = this.getMysqlConnection();
+
+        try {
+            const newData = new Game(
+                gameId,
+                game.name,
+                game.stock,
+                game.price,
+                game.imageUrl,
+            );
+
+            const values = Object.values(newData);
+
+            const [,] = await connection.execute<ResultSetHeader>(CREATE_WITH_ID, values);
+            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [gameId]);
+
+            const createdGame = new Game(
+                data[0].id,
+                data[0].name,
+                data[0].stock,
+                data[0].price,
+                data[0].imageUrl,
+            );
+
+            return createdGame;
+
+        } catch (error: any) {
+            if (error.status === 403) {
+                const err = error;
+                throw err;
+            }
+            if ('code' in error && error.code === 'ER_DUP_ENTRY') {
+                console.error('Error:', error);
+                const err = new ErrorWithStatus('Game name already on the database');
+                err.status = 403;
                 throw err;
             }
             console.error('Error executing query:', error);

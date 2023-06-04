@@ -28,5 +28,12 @@ export const GAMES: Game[] = [
         price: 300000,
         imageUrl: "https://image.api.playstation.com/vulcan/ap/rnd/202107/3100/1dy5w3SNiJnXjP8YvmydCL9X.png",
         id: 4,
+    },
+    {
+        name: "Zelda: ToTK",
+        stock: 2,
+        price: 300000,
+        imageUrl: "'https://assets-prd.ignimgs.com/2022/09/14/zelda-tears-of-the-kingdom-button-2k-1663127818777.jpg'",
+        id: 5,
     }
 ];

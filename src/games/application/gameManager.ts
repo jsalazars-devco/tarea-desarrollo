@@ -22,8 +22,13 @@ export class GameManager {
         return game;
     }
 
-    async updateGameById(gameId: number, game: GameRequest): Promise<[Game, number] | null> {
+    async updateGameById(gameId: number, game: GameRequest): Promise<Game | null> {
         const updatedGame = await this.gameRepository.updateById(gameId, game);
+        return updatedGame;
+    }
+
+    async createGameWithId(gameId: number, game: GameRequest): Promise<Game | null> {
+        const updatedGame = await this.gameRepository.createWithId(gameId, game);
         return updatedGame;
     }
 }

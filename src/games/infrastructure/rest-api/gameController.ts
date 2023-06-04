@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { GameManager } from "../../application/gameManager";
-import ErrorWithStatus from "../../../shared/domain/errorWithStatus";
 
 export class GameController {
 
@@ -41,18 +40,21 @@ export class GameController {
         }
     }
 
-    async updateGameById(req: Request, res: Response) {
+    async updateOrCreateGameById(req: Request, res: Response) {
         try {
-            const values = await this.gameManager.updateGameById(Number(req.params.id), req.body);
-            if (values !== null) {
-                const [game, status] = values;
-                res.status(status);
+            const updatedValues = await this.gameManager.updateGameById(Number(req.params.id), req.body);
+            if (updatedValues !== null) {
+                const game = updatedValues;
+                res.status(200);
                 res.send(game);
             }
             else {
-                const error = new ErrorWithStatus('Error in database');
-                error.status = 500;
-                throw error;
+                const createdValues = await this.gameManager.createGameWithId(Number(req.params.id), req.body);
+                if (createdValues !== null) {
+                    const game = createdValues;
+                    res.status(201);
+                    res.send(game);
+                }
             }
         } catch (error: any) {
             res.status(error.status);

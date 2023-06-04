@@ -16,7 +16,7 @@ gameRouter.route('/:id')
         gameController.findGameById.bind(gameController)
     )
     .put(
-        gameController.updateGameById.bind(gameController)
+        gameController.updateOrCreateGameById.bind(gameController)
     );
 
 export { gameRouter };
