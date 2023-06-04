@@ -7,4 +7,5 @@ export interface GameRepository {
     create(game: GameRequest): Promise<Game | null>;
     updateById(gameId: number, game: GameRequest): Promise<Game | null>;
     createWithId(gameId: number, game: GameRequest): Promise<Game | null>;
+    deleteById(gameId: number): Promise<null>;
 }

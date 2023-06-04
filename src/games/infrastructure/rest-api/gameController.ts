@@ -62,4 +62,15 @@ export class GameController {
         }
     }
 
+    async deleteGameById(req: Request, res: Response) {
+        try {
+            await this.gameManager.deleteGameById(Number(req.params.id));
+            res.status(200);
+            res.send(`Game with ID: "${req.params.id}" deleted`);
+        } catch (error: any) {
+            res.status(error.status);
+            res.send(error.message);
+        }
+    }
+
 }

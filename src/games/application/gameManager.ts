@@ -28,7 +28,12 @@ export class GameManager {
     }
 
     async createGameWithId(gameId: number, game: GameRequest): Promise<Game | null> {
-        const updatedGame = await this.gameRepository.createWithId(gameId, game);
-        return updatedGame;
+        const createdGame = await this.gameRepository.createWithId(gameId, game);
+        return createdGame;
+    }
+
+    async deleteGameById(gameId: number): Promise<null> {
+        await this.gameRepository.deleteById(gameId);
+        return null;
     }
 }

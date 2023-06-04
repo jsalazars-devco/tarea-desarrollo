@@ -17,6 +17,9 @@ gameRouter.route('/:id')
     )
     .put(
         gameController.updateOrCreateGameById.bind(gameController)
+    )
+    .delete(
+        gameController.deleteGameById.bind(gameController)
     );
 
 export { gameRouter };
