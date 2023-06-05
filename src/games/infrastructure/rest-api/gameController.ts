@@ -42,18 +42,16 @@ export class GameController {
 
     async updateOrCreateGameById(req: Request, res: Response) {
         try {
-            const updatedValues = await this.gameManager.updateGameById(Number(req.params.id), req.body);
-            if (updatedValues !== null) {
-                const game = updatedValues;
+            const updatedGame = await this.gameManager.updateGameById(Number(req.params.id), req.body);
+            if (updatedGame !== null) {
                 res.status(200);
-                res.send(game);
+                res.send(updatedGame);
             }
             else {
-                const createdValues = await this.gameManager.createGameWithId(Number(req.params.id), req.body);
-                if (createdValues !== null) {
-                    const game = createdValues;
+                const createdGame = await this.gameManager.createGameWithId(Number(req.params.id), req.body);
+                if (createdGame !== null) {
                     res.status(201);
-                    res.send(game);
+                    res.send(createdGame);
                 }
             }
         } catch (error: any) {
@@ -66,6 +64,7 @@ export class GameController {
         try {
             await this.gameManager.deleteGameById(Number(req.params.id));
             res.status(200);
+            res.set('Content-Type', 'text/plain');
             res.send(`Game with ID: "${req.params.id}" deleted`);
         } catch (error: any) {
             res.status(error.status);

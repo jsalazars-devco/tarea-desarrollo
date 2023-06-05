@@ -8,3 +8,4 @@ export const DB_HOST: string | undefined = process.env.DB_HOST;
 export const DB_USER: string | undefined = process.env.DB_USER;
 export const DB_PASSWORD: string | undefined = process.env.DB_PASSWORD;
 export const DB_DATABASE: string | undefined = process.env.DB_DATABASE;
+export const URL_WHITELIST: string[] | undefined = process.env.URL_WHITELIST?.split(',');

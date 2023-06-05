@@ -5,6 +5,6 @@ import MysqlDatabaseConnection from "../shared/infrastructure/mysqlConnection";
 
 const mysqlDatabaseConnection = MysqlDatabaseConnection.getInstance();
 const gameRepository = new MysqlGameRepository(mysqlDatabaseConnection);
-const gamesManager = new GameManager(gameRepository);
+const gameManager = new GameManager(gameRepository);
 
-export const gameController = new GameController(gamesManager);
+export const gameController = new GameController(gameManager);
