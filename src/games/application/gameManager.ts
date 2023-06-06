@@ -1,6 +1,6 @@
-import { Game } from "../domain/gameModel";
-import { GameRepository } from "../domain/gameRepository";
-import { GameRequest } from "../domain/gameRequestModel";
+import { Game } from '../domain/gameModel';
+import { GameRepository } from '../domain/gameRepository';
+import { GameRequest } from '../domain/gameRequestModel';
 
 export class GameManager {
     constructor(

@@ -1,6 +1,6 @@
-import Cors from "cors";
-import { Request } from "express";
-import { URL_WHITELIST } from "../../../config";
+import Cors from 'cors';
+import { Request } from 'express';
+import { URL_WHITELIST } from '../../../config';
 
 const whitelist = URL_WHITELIST;
 

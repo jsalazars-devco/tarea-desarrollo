@@ -1,10 +1,10 @@
-import { UserController } from "./infrastructure/rest-api/users/userController";
-import { AuthController } from "./infrastructure/rest-api/auth/authController";
-import { UserManager } from "./application/userManager";
-import { AuthManager } from "./application/authManager";
-import { MysqlUserRepository } from "./infrastructure/mysqlRepository/mysqlUserRepository";
-import { MysqlAuthRepository } from "./infrastructure/mysqlRepository/mysqlAuthRepository";
-import MysqlDatabaseConnection from "../shared/infrastructure/mysqlConnection";
+import { UserController } from './infrastructure/rest-api/users/userController';
+import { AuthController } from './infrastructure/rest-api/auth/authController';
+import { UserManager } from './application/userManager';
+import { AuthManager } from './application/authManager';
+import { MysqlUserRepository } from './infrastructure/mysqlRepository/mysqlUserRepository';
+import { MysqlAuthRepository } from './infrastructure/mysqlRepository/mysqlAuthRepository';
+import MysqlDatabaseConnection from '../shared/infrastructure/mysqlConnection';
 
 const mysqlDatabaseConnection = MysqlDatabaseConnection.getInstance();
 

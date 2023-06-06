@@ -1,10 +1,10 @@
-import express from "express";
-import { gameController } from "../../dependencies";
-import { cors, corsWithOptions } from "../../../shared/infrastructure/cors";
+import express from 'express';
+import { gameController } from '../../dependencies';
+import { cors, corsWithOptions } from '../../../shared/infrastructure/cors';
 
 const gameRouter = express.Router();
 
-gameRouter.route("/")
+gameRouter.route('/')
     .get(
         cors,
         gameController.findGames.bind(gameController)

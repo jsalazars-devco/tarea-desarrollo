@@ -1,5 +1,5 @@
-import { UserResponse } from "./userResponseModel";
-import { UserRequest } from "./userRequestModel";
+import { UserResponse } from './userResponseModel';
+import { UserRequest } from './userRequestModel';
 
 export interface UserRepository {
     findAll(): Promise<UserResponse[] | null>;

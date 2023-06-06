@@ -1,16 +1,16 @@
-import MysqlDatabaseConnection from "../../../shared/infrastructure/mysqlConnection";
-import { Game } from "../../domain/gameModel";
-import { GameRequest } from "../../domain/gameRequestModel";
-import { GameRepository } from "../../domain/gameRepository";
+import MysqlDatabaseConnection from '../../../shared/infrastructure/mysqlConnection';
+import { Game } from '../../domain/gameModel';
+import { GameRequest } from '../../domain/gameRequestModel';
+import { GameRepository } from '../../domain/gameRepository';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_NAME, UPDATE_BY_ID } from "./querys";
-import ErrorWithStatus from "../../../shared/domain/errorWithStatus";
+import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_NAME, UPDATE_BY_ID } from './querys';
+import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 
 export class MysqlGameRepository implements GameRepository {
 
-    private connectToMysql: MysqlDatabaseConnection["connect"];
-    private closeConnectionToMysql: MysqlDatabaseConnection["close"];
-    private getMysqlConnection: MysqlDatabaseConnection["getConnection"];;
+    private connectToMysql: MysqlDatabaseConnection['connect'];
+    private closeConnectionToMysql: MysqlDatabaseConnection['close'];
+    private getMysqlConnection: MysqlDatabaseConnection['getConnection'];
 
     constructor(
         private readonly mysqlDatabaseConnection: MysqlDatabaseConnection

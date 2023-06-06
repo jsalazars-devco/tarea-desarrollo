@@ -1,4 +1,4 @@
-import ErrorWithStatus from "../../../shared/domain/errorWithStatus";
+import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 import bcrypt from 'bcryptjs';
 
 export class User {

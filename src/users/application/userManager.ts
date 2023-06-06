@@ -1,6 +1,6 @@
-import { UserRepository } from "../domain/users/userRepository";
-import { UserRequest } from "../domain/users/userRequestModel";
-import { UserResponse } from "../domain/users/userResponseModel";
+import { UserRepository } from '../domain/users/userRepository';
+import { UserRequest } from '../domain/users/userRequestModel';
+import { UserResponse } from '../domain/users/userResponseModel';
 
 export class UserManager {
     constructor(

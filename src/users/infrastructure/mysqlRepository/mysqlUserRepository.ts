@@ -1,18 +1,18 @@
-import MysqlDatabaseConnection from "../../../shared/infrastructure/mysqlConnection";
-import { User } from "../../domain/users/userModel";
-import { UserRequest } from "../../domain/users/userRequestModel";
-import { UserResponse } from "../../domain/users/userResponseModel";
-import { UserRepository } from "../../domain/users/userRepository";
+import MysqlDatabaseConnection from '../../../shared/infrastructure/mysqlConnection';
+import { User } from '../../domain/users/userModel';
+import { UserRequest } from '../../domain/users/userRequestModel';
+import { UserResponse } from '../../domain/users/userResponseModel';
+import { UserRepository } from '../../domain/users/userRepository';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { UserDbRequest } from "../../domain/users/userDbRequestModel";
-import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_USERNAME, UPDATE_BY_ID } from "./querys";
-import ErrorWithStatus from "../../../shared/domain/errorWithStatus";
+import { UserDbRequest } from '../../domain/users/userDbRequestModel';
+import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_USERNAME, UPDATE_BY_ID } from './querys';
+import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 
 export class MysqlUserRepository implements UserRepository {
 
-    private connectToMysql: MysqlDatabaseConnection["connect"];
-    private closeConnectionToMysql: MysqlDatabaseConnection["close"];
-    private getMysqlConnection: MysqlDatabaseConnection["getConnection"];;
+    private connectToMysql: MysqlDatabaseConnection['connect'];
+    private closeConnectionToMysql: MysqlDatabaseConnection['close'];
+    private getMysqlConnection: MysqlDatabaseConnection['getConnection'];
 
     constructor(
         private readonly mysqlDatabaseConnection: MysqlDatabaseConnection
@@ -120,7 +120,7 @@ export class MysqlUserRepository implements UserRepository {
             }
 
             const error = new ErrorWithStatus('Invalid ID');
-            error.status = 404;
+            error.status = 403;
             throw error;
 
         } catch (error: any) {

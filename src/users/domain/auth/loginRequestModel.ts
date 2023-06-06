@@ -1,8 +1,5 @@
-import ErrorWithStatus from "../../../shared/domain/errorWithStatus";
-// import { UserDbRequest } from "../users/userDbRequestModel";
-import { User } from "../users/userModel";
-import { LoginResponse } from "./loginResponseModel";
-// import jwt from "jsonwebtoken";
+import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
+import { User } from '../users/userModel';
 
 export class LoginRequest implements Pick<User, 'username' | 'password'>{
     constructor(
@@ -18,9 +15,4 @@ export class LoginRequest implements Pick<User, 'username' | 'password'>{
             throw error;
         }
     }
-
-    returnLoginResponse(): LoginResponse | null {
-        return null;
-    }
-
 }

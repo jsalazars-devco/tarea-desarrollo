@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { GameManager } from "../../application/gameManager";
+import { Request, Response } from 'express';
+import { GameManager } from '../../application/gameManager';
 
 export class GameController {
 

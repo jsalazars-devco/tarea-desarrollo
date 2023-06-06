@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { UserManager } from "../../../application/userManager";
+import { Request, Response } from 'express';
+import { UserManager } from '../../../application/userManager';
 
 export class UserController {
 

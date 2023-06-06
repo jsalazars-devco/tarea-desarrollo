@@ -1,10 +1,10 @@
-import express from "express";
-import { userController } from "../../../dependencies";
-import { corsWithOptions } from "../../../../shared/infrastructure/cors";
+import express from 'express';
+import { userController } from '../../../dependencies';
+import { corsWithOptions } from '../../../../shared/infrastructure/cors';
 
 const userRouter = express.Router();
 
-userRouter.route("/")
+userRouter.route('/')
     .get(
         corsWithOptions,
         userController.findUsers.bind(userController)
