@@ -27,10 +27,15 @@ export class TokenRequest {
         try {
             this.decodedToken = jwt.verify(token, JWT_SECRET_KEY, verifyOptions) as IJwtVerify;
 
-        } catch (error) {
+        } catch (error: any) {
+            if (error.expiredAt) {
+                const err = new ErrorWithStatus('Token Expired');
+                err.status = 401;
+                throw err;
+            }
             const err = new ErrorWithStatus('Invalid token');
             err.status = 403;
-            throw error;
+            throw err;
         }
     }
 

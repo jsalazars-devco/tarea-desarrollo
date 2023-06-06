@@ -1,5 +1,6 @@
-import { createConnection, Connection } from 'mysql2/promise';
+import { createConnection, Connection, RowDataPacket, ResultSetHeader } from 'mysql2/promise';
 import { DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE } from '../../../config';
+import ErrorWithStatus from '../domain/errorWithStatus';
 
 class MysqlDatabaseConnection {
     private static instance: MysqlDatabaseConnection;
@@ -34,6 +35,32 @@ class MysqlDatabaseConnection {
     public async close(): Promise<void> {
         if (this.connection) {
             await this.connection.end();
+        }
+    }
+
+    public async execute(query: string, values: any[]): Promise<RowDataPacket[] | ResultSetHeader> {
+        try {
+            await this.connect();
+            const [data,] = await this.connection.execute<RowDataPacket[] | ResultSetHeader>(query, values);
+            return data;
+        } catch (error: any) {
+            if (error.status < 500) {
+                const err = error;
+                throw err;
+            }
+            if (error.code === 'ER_DUP_ENTRY') {
+                const [, duplicatedEntry, , keyValue] = error.sqlMessage.split("'");
+                const [, value] = keyValue.split('.');
+                const err = new ErrorWithStatus(`The ${value} "${duplicatedEntry}" is already being used`);
+                err.status = 403;
+                throw err;
+            }
+            console.error('Error executing query:', error);
+            const err = new ErrorWithStatus('Error in database');
+            err.status = 500;
+            throw err;
+        } finally {
+            await this.close();
         }
     }
 }

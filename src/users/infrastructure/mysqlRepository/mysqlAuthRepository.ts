@@ -11,99 +11,59 @@ import { UserResponse } from '../../domain/users/userResponseModel';
 
 export class MysqlAuthRepository implements AuthRepository {
 
-    private connectToMysql: MysqlDatabaseConnection['connect'];
-    private closeConnectionToMysql: MysqlDatabaseConnection['close'];
-    private getMysqlConnection: MysqlDatabaseConnection['getConnection'];
+    private executeMysqlQuery: MysqlDatabaseConnection['execute'];
 
     constructor(
-        private readonly mysqlDatabaseConnection: MysqlDatabaseConnection
+        readonly mysqlDatabaseConnection: MysqlDatabaseConnection
     ) {
-        this.connectToMysql = this.mysqlDatabaseConnection.connect.bind(this.mysqlDatabaseConnection);
-        this.closeConnectionToMysql = this.mysqlDatabaseConnection.close.bind(this.mysqlDatabaseConnection);
-        this.getMysqlConnection = this.mysqlDatabaseConnection.getConnection.bind(this.mysqlDatabaseConnection);
+        this.executeMysqlQuery = mysqlDatabaseConnection.execute.bind(mysqlDatabaseConnection);
     }
 
     async loginUser(login: LoginRequest): Promise<LoginResponse | null> {
 
-        await this.connectToMysql();
-        const connection = this.getMysqlConnection();
+        const data = await this.executeMysqlQuery(FIND_BY_USERNAME, [login.username]) as RowDataPacket[];
 
-        try {
-            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_USERNAME, [login.username]);
-
-            if (data.length === 0) {
-                const error = new ErrorWithStatus('Invalid username or password');
-                error.status = 401;
-                throw error;
-            }
-
-            if (
-                !(await User.verifyPassword(login.password, data[0].password, data[0].salt))
-            ) {
-                const error = new ErrorWithStatus('Invalid username or password');
-                error.status = 401;
-                throw error;
-            }
-
-            const user = new LoginResponse(
-                data[0].id,
-                data[0].username,
-                Boolean(data[0].admin),
-            );
-
-            return user;
-
-        } catch (error: any) {
-            if (error.status < 500) {
-                const err = error;
-                throw err;
-            }
-            console.error('Error executing query:', error);
-            const err = new ErrorWithStatus('Error in database');
-            err.status = 500;
-            throw err;
-        } finally {
-            await this.closeConnectionToMysql();
+        if (data.length === 0) {
+            const error = new ErrorWithStatus('Invalid username or password');
+            error.status = 401;
+            throw error;
         }
+
+        if (
+            !(await User.verifyPassword(login.password, data[0].password, data[0].salt))
+        ) {
+            const error = new ErrorWithStatus('Invalid username or password');
+            error.status = 401;
+            throw error;
+        }
+
+        const user = new LoginResponse(
+            data[0].id,
+            data[0].username,
+            Boolean(data[0].admin),
+        );
+
+        return user;
+
     }
 
     async verifyUser(token: string): Promise<UserResponse | null> {
 
-        await this.connectToMysql();
-        const connection = this.getMysqlConnection();
+        const tokenUserInfo = new TokenRequest(token).getTokenInfo();
 
-        try {
-            const tokenUserInfo = new TokenRequest(token).getTokenInfo();
-
-            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [tokenUserInfo.id]);
-
-            if (data.length === 0) {
-                const error = new ErrorWithStatus('Error in database');
-                error.status = 500;
-                throw error;
-            }
-
-            const user = new UserResponse(
-                data[0].id,
-                data[0].username,
-                Boolean(data[0].admin),
-            );
-
-            return user;
-
-        } catch (error: any) {
-            if (error.status < 500) {
-                const err = error;
-                throw err;
-            }
-            console.error('Error executing query:', error);
-            const err = new ErrorWithStatus('Error in database');
-            err.status = 500;
-            throw err;
-        } finally {
-            await this.closeConnectionToMysql();
+        const data = await this.executeMysqlQuery(FIND_BY_ID, [tokenUserInfo.id]) as RowDataPacket[];
+        if (data.length === 0) {
+            const error = new ErrorWithStatus('Error in database');
+            error.status = 500;
+            throw error;
         }
+
+        const user = new UserResponse(
+            data[0].id,
+            data[0].username,
+            Boolean(data[0].admin),
+        );
+
+        return user;
     }
-
-
 }
