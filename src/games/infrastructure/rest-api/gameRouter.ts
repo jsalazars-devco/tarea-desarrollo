@@ -6,7 +6,7 @@ const gameRouter = express.Router();
 
 gameRouter.route("/")
     .get(
-        corsWithOptions,
+        cors,
         gameController.findGames.bind(gameController)
     )
     .post(

@@ -1,12 +1,14 @@
 import MysqlDatabaseConnection from "../../../shared/infrastructure/mysqlConnection";
-import { Game } from "../../domain/gameModel";
-import { GameRequest } from "../../domain/gameRequestModel";
-import { GameRepository } from "../../domain/gameRepository";
+import { User } from "../../domain/users/userModel";
+import { UserRequest } from "../../domain/users/userRequestModel";
+import { UserResponse } from "../../domain/users/userResponseModel";
+import { UserRepository } from "../../domain/users/userRepository";
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_NAME, UPDATE_BY_ID } from "./querys";
+import { UserDbRequest } from "../../domain/users/userDbRequestModel";
+import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_USERNAME, UPDATE_BY_ID } from "./querys";
 import ErrorWithStatus from "../../../shared/domain/errorWithStatus";
 
-export class MysqlGameRepository implements GameRepository {
+export class MysqlUserRepository implements UserRepository {
 
     private connectToMysql: MysqlDatabaseConnection["connect"];
     private closeConnectionToMysql: MysqlDatabaseConnection["close"];
@@ -20,7 +22,7 @@ export class MysqlGameRepository implements GameRepository {
         this.getMysqlConnection = this.mysqlDatabaseConnection.getConnection.bind(this.mysqlDatabaseConnection);
     }
 
-    async findAll(): Promise<Game[] | null> {
+    async findAll(): Promise<UserResponse[] | null> {
 
         await this.connectToMysql();
         const connection = this.getMysqlConnection();
@@ -28,15 +30,13 @@ export class MysqlGameRepository implements GameRepository {
         try {
             const [data,] = await connection.execute<RowDataPacket[]>(FIND_ALL);
 
-            const games = data.map((game: RowDataPacket) => new Game(
-                game.id,
-                game.name,
-                game.stock,
-                game.price,
-                game.imageUrl,
+            const users = data.map((user: RowDataPacket) => new UserResponse(
+                user.id,
+                user.username,
+                Boolean(user.admin),
             ));
 
-            return games;
+            return users;
 
         } catch (error) {
             console.error('Error executing query:', error);
@@ -48,56 +48,51 @@ export class MysqlGameRepository implements GameRepository {
         }
     }
 
-    async create(game: GameRequest): Promise<Game | null> {
+    async create(user: UserRequest): Promise<UserResponse | null> {
 
         await this.connectToMysql();
         const connection = this.getMysqlConnection();
 
         try {
-            const gameRequest = new GameRequest(
-                game.name,
-                game.stock,
-                game.price,
-                game.imageUrl,
-            );
 
-            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_NAME, [gameRequest.name]);
+            const userToCreate: UserDbRequest = await new UserRequest(
+                user.username,
+                user.password,
+                user.admin,
+            ).returnUserDbRequest();
+
+            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_USERNAME, [userToCreate.username]);
+
             if (data.length > 0) {
                 if (
-                    data[0].name !== gameRequest.name
-                    || data[0].stock !== gameRequest.stock
-                    || data[0].price !== gameRequest.price
-                    || data[0].imageUrl !== gameRequest.imageUrl
+                    data[0].username !== userToCreate.username
+                    || !(await User.verifyPassword(user.password, data[0].password, data[0].salt))
+                    || Boolean(data[0].admin) !== userToCreate.admin
                 ) {
-                    const error = new ErrorWithStatus('To modify the game, try the PUT /api/game/{gameId} endpoint');
+                    const error = new ErrorWithStatus('To modify the user, try the PUT /users/{userId} endpoint');
                     error.status = 403;
                     throw error;
                 }
-                const gameAlreadyOnDb = new Game(
+                const userAlreadyOnDb = new UserResponse(
                     data[0].id,
-                    data[0].name,
-                    data[0].stock,
-                    data[0].price,
-                    data[0].imageUrl,
+                    data[0].username,
+                    Boolean(data[0].admin),
                 );
 
-                return gameAlreadyOnDb;
+                return userAlreadyOnDb;
             }
 
-            const values = Object.values(gameRequest).filter(value => value !== undefined);
+            const values = Object.values(userToCreate).filter(value => value !== undefined);
             const [result,] = await connection.execute<ResultSetHeader>(CREATE, values);
+            const [userRow,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [result.insertId]);
 
-            const [gameRow,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [result.insertId]);
-
-            const newGame = new Game(
-                gameRow[0].id,
-                gameRow[0].name,
-                gameRow[0].stock,
-                gameRow[0].price,
-                gameRow[0].imageUrl,
+            const newUser = new UserResponse(
+                userRow[0].id,
+                userRow[0].username,
+                Boolean(userRow[0].admin),
             );
 
-            return newGame;
+            return newUser;
 
         } catch (error: any) {
             throw error;
@@ -106,24 +101,22 @@ export class MysqlGameRepository implements GameRepository {
         }
     }
 
-    async findById(gameId: number): Promise<Game | null> {
+    async findById(userId: number): Promise<UserResponse | null> {
 
         await this.connectToMysql();
         const connection = this.getMysqlConnection();
 
         try {
-            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [gameId]);
+            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [userId]);
 
             if (data.length > 0) {
-                const game = new Game(
+                const user = new UserResponse(
                     data[0].id,
-                    data[0].name,
-                    data[0].stock,
-                    data[0].price,
-                    data[0].imageUrl,
+                    data[0].username,
+                    Boolean(data[0].admin),
                 );
 
-                return game;
+                return user;
             }
 
             const error = new ErrorWithStatus('Invalid ID');
@@ -144,35 +137,32 @@ export class MysqlGameRepository implements GameRepository {
         }
     }
 
-    async updateById(gameId: number, game: GameRequest): Promise<Game | null> {
+    async updateById(userId: number, user: UserRequest): Promise<UserResponse | null> {
         await this.connectToMysql();
         const connection = this.getMysqlConnection();
 
         try {
-            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [gameId]);
+            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [userId]);
 
             if (data.length > 0) {
-                const values = Object.values(new GameRequest(
-                    game.name,
-                    game.stock,
-                    game.price,
-                    game.imageUrl,
-                ));
+                const values = Object.values(await new UserRequest(
+                    user.username,
+                    user.password,
+                    user.admin,
+                ).returnUserDbRequest());
 
-                values.push(gameId);
+                values.push(userId);
 
                 await connection.execute<ResultSetHeader>(UPDATE_BY_ID, values);
-                const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [gameId]);
+                const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [userId]);
 
-                const updatedGame = new Game(
+                const updatedUser = new UserResponse(
                     data[0].id,
-                    data[0].name,
-                    data[0].stock,
-                    data[0].price,
-                    data[0].imageUrl,
+                    data[0].username,
+                    Boolean(data[0].admin),
                 );
 
-                return updatedGame;
+                return updatedUser;
             }
 
             return null;
@@ -191,33 +181,31 @@ export class MysqlGameRepository implements GameRepository {
         }
     }
 
-    async createWithId(gameId: number, game: GameRequest): Promise<Game | null> {
+    async createWithId(userId: number, user: UserRequest): Promise<UserResponse | null> {
         await this.connectToMysql();
         const connection = this.getMysqlConnection();
 
         try {
-            const newData = new Game(
-                gameId,
-                game.name,
-                game.stock,
-                game.price,
-                game.imageUrl,
-            );
+
+            const newData: UserDbRequest = await new UserRequest(
+                user.username,
+                user.password,
+                user.admin,
+            ).returnUserDbRequest();
 
             const values = Object.values(newData);
+            values.unshift(userId);
 
             await connection.execute<ResultSetHeader>(CREATE_WITH_ID, values);
-            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [gameId]);
+            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [userId]);
 
-            const createdGame = new Game(
+            const createdUser = new UserResponse(
                 data[0].id,
-                data[0].name,
-                data[0].stock,
-                data[0].price,
-                data[0].imageUrl,
+                data[0].username,
+                Boolean(data[0].admin),
             );
 
-            return createdGame;
+            return createdUser;
 
         } catch (error: any) {
             if (error.status === 403) {
@@ -226,7 +214,7 @@ export class MysqlGameRepository implements GameRepository {
             }
             if ('code' in error && error.code === 'ER_DUP_ENTRY') {
                 console.error('Error:', error);
-                const err = new ErrorWithStatus('Game name already on the database');
+                const err = new ErrorWithStatus('User name already on the database');
                 err.status = 403;
                 throw err;
             }
@@ -239,14 +227,14 @@ export class MysqlGameRepository implements GameRepository {
         }
     }
 
-    async deleteById(gameId: number): Promise<null> {
+    async deleteById(userId: number): Promise<null> {
         await this.connectToMysql();
         const connection = this.getMysqlConnection();
 
         try {
-            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [gameId]);
+            const [data,] = await connection.execute<RowDataPacket[]>(FIND_BY_ID, [userId]);
             if (data.length > 0) {
-                await connection.execute<ResultSetHeader>(DELETE_BY_ID, [gameId]);
+                await connection.execute<ResultSetHeader>(DELETE_BY_ID, [userId]);
                 return null;
             }
             const error = new ErrorWithStatus('Invalid ID');

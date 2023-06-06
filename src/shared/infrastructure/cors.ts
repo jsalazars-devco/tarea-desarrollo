@@ -11,7 +11,7 @@ interface CorsOptions {
 const corsOptionsDelegate = (req: Request, cb: (arg0: null, arg1: CorsOptions) => void) => {
     const corsOptions: CorsOptions = { origin: false };
 
-    if (whitelist !== undefined && whitelist.includes(req.header('Origin') as string)) {
+    if (whitelist?.includes(req.header('Origin') as string)) {
         corsOptions.origin = true;
     }
     else {

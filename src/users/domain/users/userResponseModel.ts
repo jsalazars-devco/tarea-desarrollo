@@ -1,14 +1,11 @@
-import ErrorWithStatus from "../../shared/domain/errorWithStatus";
+import { User } from './userModel';
+import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 
-export class User {
+export class UserResponse implements Omit<User, 'password' | 'salt'> {
     constructor(
         readonly id: number,
         readonly username: string,
-        readonly password: string,
-        readonly firstName: string,
-        readonly lastName: string,
-        readonly email: string,
-        readonly phone: string,
+        readonly admin: boolean,
     ) {
         if (Number.isNaN(id) || id < 0) {
             const error = new ErrorWithStatus('Invalid ID: Must be a positive number');
@@ -17,11 +14,7 @@ export class User {
         }
         else if (
             typeof username !== 'string'
-            || typeof password !== 'string'
-            || typeof firstName !== 'string'
-            || typeof lastName !== 'string'
-            || typeof email !== 'string'
-            || typeof phone !== 'string'
+            || typeof admin !== 'boolean'
         ) {
             const error = new ErrorWithStatus('Invalid input');
             error.status = 403;
