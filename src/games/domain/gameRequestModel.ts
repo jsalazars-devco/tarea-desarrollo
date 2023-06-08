@@ -15,10 +15,10 @@ export class GameRequest implements Omit<Game, 'id'> {
             || stock < 0
             || Number.isNaN(price)
             || typeof price !== 'number'
-            || price < 0
+            || price <= 0
             || typeof imageUrl !== 'string'
         ) {
-            const error = new ErrorWithStatus('Invalid input');
+            const error = new ErrorWithStatus('Invalid game input');
             error.status = 403;
             throw error;
         }

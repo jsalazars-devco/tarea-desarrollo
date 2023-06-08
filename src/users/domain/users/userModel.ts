@@ -14,13 +14,13 @@ export class User {
             error.status = 403;
             throw error;
         }
-        else if (
+        if (
             typeof username !== 'string'
             || typeof password !== 'string'
             || typeof salt !== 'string'
             || typeof admin !== 'boolean'
         ) {
-            const error = new ErrorWithStatus('Invalid input');
+            const error = new ErrorWithStatus('Invalid user input');
             error.status = 403;
             throw error;
         }

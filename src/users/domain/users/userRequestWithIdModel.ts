@@ -18,7 +18,7 @@ export class UserRequestWithId implements Omit<User, 'salt'> {
             || typeof password !== 'string'
             || typeof admin !== 'boolean'
         ) {
-            const error = new ErrorWithStatus('Invalid input');
+            const error = new ErrorWithStatus('Invalid user input');
             error.status = 403;
             throw error;
         }
@@ -26,6 +26,17 @@ export class UserRequestWithId implements Omit<User, 'salt'> {
 
     public async returnUserDbRequest(): Promise<UserDbRequest> {
         const { salt, hashedPassword } = await User.hashPassword(this.password);
-        return new UserDbRequest(this.username, hashedPassword, salt, this.admin);
+        if (this.admin) return new UserDbRequest(
+            this.username,
+            this.password,
+            salt,
+            this.admin
+        );
+        return new UserDbRequest(
+            this.username,
+            hashedPassword,
+            salt,
+            this.admin
+        );
     }
 }

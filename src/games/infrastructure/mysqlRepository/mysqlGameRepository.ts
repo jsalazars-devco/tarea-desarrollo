@@ -34,21 +34,14 @@ export class MysqlGameRepository implements GameRepository {
 
     async create(game: GameRequest): Promise<Game | null> {
 
-        const gameRequest = new GameRequest(
-            game.name,
-            game.stock,
-            game.price,
-            game.imageUrl,
-        );
-
-        const data = await this.executeMysqlQuery(FIND_BY_NAME, [gameRequest.name]) as RowDataPacket[];
+        const data = await this.executeMysqlQuery(FIND_BY_NAME, [game.name]) as RowDataPacket[];
 
         if (data.length > 0) {
             if (
-                data[0].name !== gameRequest.name
-                || data[0].stock !== gameRequest.stock
-                || data[0].price !== gameRequest.price
-                || data[0].imageUrl !== gameRequest.imageUrl
+                data[0].name !== game.name
+                || data[0].stock !== game.stock
+                || data[0].price !== game.price
+                || data[0].imageUrl !== game.imageUrl
             ) {
                 const error = new ErrorWithStatus('To modify the game, try the PUT /api/game/{gameId} endpoint');
                 error.status = 403;
@@ -65,7 +58,7 @@ export class MysqlGameRepository implements GameRepository {
             return gameAlreadyOnDb;
         }
 
-        const values = Object.values(gameRequest);
+        const values = Object.values(game);
         const result = await this.executeMysqlQuery(CREATE, values) as ResultSetHeader;
         const gameRow = await this.executeMysqlQuery(FIND_BY_ID, [result.insertId]) as RowDataPacket;
 
@@ -109,12 +102,7 @@ export class MysqlGameRepository implements GameRepository {
             return null;
         }
 
-        const values = Object.values(new GameRequest(
-            game.name,
-            game.stock,
-            game.price,
-            game.imageUrl,
-        ));
+        const values = Object.values(game);
 
         values.push(gameId);
 

@@ -1,3 +1,4 @@
+import { UserDbRequest } from '../domain/users/userDbRequestModel';
 import { UserRepository } from '../domain/users/userRepository';
 import { UserRequest } from '../domain/users/userRequestModel';
 import { UserResponse } from '../domain/users/userResponseModel';
@@ -13,7 +14,12 @@ export class UserManager {
     }
 
     async createUser(user: UserRequest): Promise<UserResponse | null> {
-        const newUser = await this.userRepository.create(user);
+        const userToCreate: UserDbRequest = await new UserRequest(
+            user.username,
+            user.password,
+            user.admin,
+        ).returnUserDbRequest();
+        const newUser = await this.userRepository.create(userToCreate);
         return newUser;
     }
 
@@ -23,7 +29,12 @@ export class UserManager {
     }
 
     async updateUserById(userId: number, user: UserRequest): Promise<UserResponse | null> {
-        const updatedUser = await this.userRepository.updateById(userId, user);
+        const userToUpdate = await new UserRequest(
+            user.username,
+            user.password,
+            user.admin,
+        ).returnUserDbRequest();
+        const updatedUser = await this.userRepository.updateById(userId, userToUpdate);
         return updatedUser;
     }
 

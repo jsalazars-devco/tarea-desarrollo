@@ -13,7 +13,13 @@ export class GameManager {
     }
 
     async createGame(game: GameRequest): Promise<Game | null> {
-        const newGame = await this.gameRepository.create(game);
+        const gameRequest = new GameRequest(
+            game.name,
+            game.stock,
+            game.price,
+            game.imageUrl,
+        );
+        const newGame = await this.gameRepository.create(gameRequest);
         return newGame;
     }
 
@@ -23,7 +29,13 @@ export class GameManager {
     }
 
     async updateGameById(gameId: number, game: GameRequest): Promise<Game | null> {
-        const updatedGame = await this.gameRepository.updateById(gameId, game);
+        const gameToUpdate = new GameRequest(
+            game.name,
+            game.stock,
+            game.price,
+            game.imageUrl,
+        );
+        const updatedGame = await this.gameRepository.updateById(gameId, gameToUpdate);
         return updatedGame;
     }
 

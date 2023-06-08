@@ -34,21 +34,15 @@ export class MysqlUserRepository implements UserRepository {
         return users;
     }
 
-    async create(user: UserRequest): Promise<UserResponse | null> {
+    async create(user: UserDbRequest): Promise<UserResponse | null> {
 
-        const userToCreate: UserDbRequest = await new UserRequest(
-            user.username,
-            user.password,
-            user.admin,
-        ).returnUserDbRequest();
-
-        const data = await this.executeMysqlQuery(FIND_BY_USERNAME, [userToCreate.username]) as RowDataPacket[];
+        const data = await this.executeMysqlQuery(FIND_BY_USERNAME, [user.username]) as RowDataPacket[];
 
         if (data.length > 0) {
             if (
-                data[0].username !== userToCreate.username
+                data[0].username !== user.username
                 || !(await User.verifyPassword(user.password, data[0].password, data[0].salt))
-                || Boolean(data[0].admin) !== userToCreate.admin
+                || Boolean(data[0].admin) !== user.admin
             ) {
                 const error = new ErrorWithStatus('To modify the user, try the PUT /users/{userId} endpoint');
                 error.status = 403;
@@ -63,7 +57,7 @@ export class MysqlUserRepository implements UserRepository {
             return userAlreadyOnDb;
         }
 
-        const values = Object.values(userToCreate);
+        const values = Object.values(user);
         const result = await this.executeMysqlQuery(CREATE, values) as ResultSetHeader;
         const userRow = await this.executeMysqlQuery(FIND_BY_ID, [result.insertId]) as RowDataPacket[];
 
@@ -96,7 +90,7 @@ export class MysqlUserRepository implements UserRepository {
 
     }
 
-    async updateById(userId: number, user: UserRequest): Promise<UserResponse | null> {
+    async updateById(userId: number, user: UserDbRequest): Promise<UserResponse | null> {
 
         const userOnDb = await this.executeMysqlQuery(FIND_BY_ID, [userId]) as RowDataPacket[];
 
@@ -104,11 +98,7 @@ export class MysqlUserRepository implements UserRepository {
             return null;
         }
 
-        const values = Object.values(await new UserRequest(
-            user.username,
-            user.password,
-            user.admin,
-        ).returnUserDbRequest());
+        const values = Object.values(user);
 
         values.push(userId);
 
