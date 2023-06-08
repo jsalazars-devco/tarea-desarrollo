@@ -1,5 +1,6 @@
 import express from 'express';
 import { gameRouter } from './games/infrastructure/rest-api/gameRouter';
+import { orderRouter } from './orders/infrastructure/rest-api/orderRouter';
 import { userRouter } from './users/infrastructure/rest-api/users/userRouter';
 import { authRouter } from './users/infrastructure/rest-api/auth/authRouter';
 import { PORT } from '../config';
@@ -15,6 +16,7 @@ const initApp = () => {
     app.use('/api/games', gameRouter);
     app.use('/users', userRouter);
     app.use('/auth', authRouter);
+    app.use('/api/orders', orderRouter);
 
     const port = PORT;
     app.listen(port, () => {

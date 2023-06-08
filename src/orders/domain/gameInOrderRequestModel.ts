@@ -7,14 +7,20 @@ export class GameInOrderRequest implements Omit<GameInOrder, 'price'>{
         readonly quantity: number,
     ) {
         if (
-            Number.isNaN(id)
-            || typeof id !== 'number'
-            || id < 0
-            || Number.isNaN(quantity)
-            || typeof quantity !== 'number'
-            || quantity < 0
+            !(Number.isFinite(id)
+                && typeof id === 'number'
+                && id > 0)
         ) {
-            const error = new ErrorWithStatus('Invalid input');
+            const error = new ErrorWithStatus('Invalid game ID');
+            error.status = 403;
+            throw error;
+        }
+        if (
+            !(Number.isFinite(quantity)
+                && typeof quantity === 'number'
+                && quantity > 0)
+        ) {
+            const error = new ErrorWithStatus('Invalid game quantity');
             error.status = 403;
             throw error;
         }

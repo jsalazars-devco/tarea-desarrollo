@@ -55,6 +55,11 @@ class MysqlDatabaseConnection {
                 err.status = 403;
                 throw err;
             }
+            if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+                const err = new ErrorWithStatus('Invalid game ID');
+                err.status = 403;
+                throw err;
+            }
             console.error('Error executing query:', error);
             const err = new ErrorWithStatus('Error in database');
             err.status = 500;

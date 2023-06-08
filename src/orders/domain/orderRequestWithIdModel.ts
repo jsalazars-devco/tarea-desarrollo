@@ -1,14 +1,17 @@
 import { Customer } from './customerInterface';
 import { GameInOrderRequest } from './gameInOrderRequestModel';
-import { checkCustomer, checkGamesInOrderRequest } from './attributeChecker';
+import { checkCustomer, checkGamesInOrderRequest, checkOrderId } from './attributeChecker';
 
-export class OrderRequest {
+export class OrderRequestWithId {
     readonly completed: boolean;
 
     constructor(
+        readonly id: number,
         readonly customer: Customer,
         readonly games: GameInOrderRequest[],
     ) {
+        checkOrderId(id);
+
         checkCustomer(customer);
 
         checkGamesInOrderRequest(games);

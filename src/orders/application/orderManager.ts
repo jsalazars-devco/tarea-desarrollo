@@ -13,7 +13,11 @@ export class OrderManager {
     }
 
     async createOrder(order: OrderRequest): Promise<Order | null> {
-        const newOrder = await this.orderRepository.create(order);
+        const orderRequest = new OrderRequest(
+            order.customer,
+            order.games,
+        );
+        const newOrder = await this.orderRepository.create(orderRequest);
         return newOrder;
     }
 
@@ -23,7 +27,11 @@ export class OrderManager {
     }
 
     async updateOrderById(orderId: number, order: OrderRequest): Promise<Order | null> {
-        const updatedOrder = await this.orderRepository.updateById(orderId, order);
+        const orderRequest = new OrderRequest(
+            order.customer,
+            order.games,
+        );
+        const updatedOrder = await this.orderRepository.updateById(orderId, orderRequest);
         return updatedOrder;
     }
 
