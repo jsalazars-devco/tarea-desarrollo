@@ -21,7 +21,7 @@ export class AuthController {
 
     async logout(_req: Request, res: Response) {
         res.setHeader('Clear-Token', 'true');
-        res.json({ message: 'Logout successful' });
+        res.send('Logout successful');
     }
 
     async me(req: Request, res: Response) {

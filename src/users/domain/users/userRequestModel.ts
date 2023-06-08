@@ -20,7 +20,18 @@ export class UserRequest implements Omit<User, 'id' | 'salt'> {
     }
 
     public async returnUserDbRequest(): Promise<UserDbRequest> {
+        if (this.admin) return new UserDbRequest(
+            this.username,
+            this.password,
+            "",
+            this.admin
+        );
         const { salt, hashedPassword } = await User.hashPassword(this.password);
-        return new UserDbRequest(this.username, hashedPassword, salt, this.admin);
+        return new UserDbRequest(
+            this.username,
+            hashedPassword,
+            salt,
+            this.admin
+        );
     }
 }
