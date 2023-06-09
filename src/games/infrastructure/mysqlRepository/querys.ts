@@ -11,3 +11,5 @@ export const CREATE_WITH_ID = 'INSERT INTO games (id, name, stock, price, imageU
 export const UPDATE_BY_ID = 'UPDATE games SET name = ?, stock = ?, price = ?, imageUrl = ? WHERE id = ?';
 
 export const DELETE_BY_ID = 'DELETE FROM games WHERE id = ?';
+
+export const FIND_GAMES_BY_ID = 'SELECT * FROM games WHERE id IN ';

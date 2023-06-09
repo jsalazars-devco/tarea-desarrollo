@@ -3,7 +3,7 @@ import { Game } from '../../domain/gameModel';
 import { GameRequest } from '../../domain/gameRequestModel';
 import { GameRepository } from '../../domain/gameRepository';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_NAME, UPDATE_BY_ID } from './querys';
+import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_NAME, FIND_GAMES_BY_ID, UPDATE_BY_ID } from './querys';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 
 export class MysqlGameRepository implements GameRepository {
@@ -160,5 +160,31 @@ export class MysqlGameRepository implements GameRepository {
 
         await this.executeMysqlQuery(DELETE_BY_ID, [gameId]);
         return null;
+    }
+
+    async findByArrayOfIds(gamesIds: number[]): Promise<Game[] | null> {
+
+        const data = await this.executeMysqlQuery(FIND_GAMES_BY_ID + `(${gamesIds.join(',')})`, []) as RowDataPacket[];
+
+        const gamesInOrder = data.map((game: RowDataPacket) => new Game(
+            game.id,
+            game.name,
+            game.stock,
+            game.price,
+            game.imageUrl,
+        ));
+
+        return gamesInOrder;
+    }
+
+    async updateByArray(games: Game[]): Promise<void> {
+
+        await Promise.all(games.map(async (game) => {
+            const values = Object.values(game);
+            values.shift();
+            values.push(game.id);
+            console.log(values);
+            return await this.executeMysqlQuery(UPDATE_BY_ID, values);
+        }));
     }
 }

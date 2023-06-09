@@ -37,3 +37,5 @@ export const CREATE_WITH_ID = 'INSERT INTO orders (id, customer, completed) VALU
 export const UPDATE_BY_ID = 'UPDATE orders SET customer = ? WHERE id = ?';
 
 export const DELETE_BY_ID = 'DELETE FROM orders WHERE id = ?';
+
+export const PAY_BY_ID = 'UPDATE orders SET completed = true WHERE id = ?';

@@ -3,7 +3,12 @@ import { Order } from '../../domain/orderModel';
 import { OrderRequest } from '../../domain/orderRequestModel';
 import { OrderRepository } from '../../domain/orderRepository';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { CREATE, CREATE_GAMES_IN_ORDER, CREATE_WITH_ID, DELETE_BY_ID, DELETE_GAMES_IN_ORDER, DELETE_GAME_IN_ORDER_BY_ID, FIND_ALL, FIND_BY_ID, FIND_GAMES_IN_ORDER, FIND_GAME_IN_ORDER_BY_ID, UPDATE_BY_ID, UPDATE_GAME_IN_ORDER } from './querys';
+import {
+    CREATE, CREATE_GAMES_IN_ORDER, CREATE_WITH_ID, DELETE_BY_ID,
+    DELETE_GAMES_IN_ORDER, DELETE_GAME_IN_ORDER_BY_ID, FIND_ALL, FIND_BY_ID,
+    FIND_GAMES_IN_ORDER, FIND_GAME_IN_ORDER_BY_ID, PAY_BY_ID,
+    UPDATE_BY_ID, UPDATE_GAME_IN_ORDER
+} from './querys';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 import { GameInOrder } from '../../domain/gameInOrderModel';
 import { OrderRequestWithId } from '../../domain/orderRequestWithIdModel';
@@ -262,5 +267,46 @@ export class MysqlOrderRepository implements OrderRepository {
         await this.executeMysqlQuery(DELETE_GAMES_IN_ORDER, [orderId]);
         await this.executeMysqlQuery(DELETE_BY_ID, [orderId]);
         return null;
+    }
+
+    async completeById(orderId: number): Promise<Order | null> {
+
+        const orderOnDb = await this.executeMysqlQuery(FIND_BY_ID, [orderId]) as RowDataPacket[];
+
+        if (orderOnDb.length === 0) {
+            const error = new ErrorWithStatus('Invalid ID');
+            error.status = 403;
+            throw error;
+        }
+
+        await this.executeMysqlQuery(PAY_BY_ID, [orderId]);
+
+        const data = await this.executeMysqlQuery(FIND_BY_ID, [orderId]) as RowDataPacket[];
+
+        if (data[0].games) {
+            const games = data[0].games.split(',').map((game: string) => {
+                const gameInfo = game.split(':');
+                return new GameInOrder(
+                    Number(gameInfo[0]),
+                    Number(gameInfo[1]),
+                    Number(gameInfo[2]),
+                );
+            });
+
+            return new Order(
+                data[0].id,
+                data[0].customer,
+                games,
+                Boolean(data[0].completed),
+            );
+        }
+        else {
+            return new Order(
+                data[0].id,
+                data[0].customer,
+                [],
+                Boolean(data[0].completed),
+            );
+        }
     }
 }

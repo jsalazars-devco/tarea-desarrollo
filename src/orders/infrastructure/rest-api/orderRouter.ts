@@ -28,4 +28,10 @@ orderRouter.route('/:id')
         orderController.deleteOrderById.bind(orderController)
     );
 
+orderRouter.route('/:id/complete')
+    .put(
+        corsWithOptions,
+        orderController.completeOrderById.bind(orderController)
+    );
+
 export { orderRouter };

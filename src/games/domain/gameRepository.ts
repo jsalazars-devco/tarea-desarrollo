@@ -8,4 +8,6 @@ export interface GameRepository {
     updateById(gameId: number, game: GameRequest): Promise<Game | null>;
     createWithId(gameId: number, game: GameRequest): Promise<Game | null>;
     deleteById(gameId: number): Promise<null>;
+    findByArrayOfIds(gamesIds: number[]): Promise<Game[] | null>;
+    updateByArray(games: Game[]): Promise<void>;
 }

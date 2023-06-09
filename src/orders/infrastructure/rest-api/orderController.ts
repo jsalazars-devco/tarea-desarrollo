@@ -73,4 +73,15 @@ export class OrderController {
         }
     }
 
+    async completeOrderById(req: Request, res: Response) {
+        try {
+            const paidOrder = await this.orderManager.completeOrderById(Number(req.params.id));
+            res.status(200);
+            res.send(paidOrder);
+        } catch (error: any) {
+            res.status(error.status);
+            res.send(error.message);
+        }
+    }
+
 }
