@@ -75,9 +75,9 @@ export class OrderController {
 
     async completeOrderById(req: Request, res: Response) {
         try {
-            const paidOrder = await this.orderManager.completeOrderById(Number(req.params.id));
-            res.status(200);
-            res.send(paidOrder);
+            await this.orderManager.completeOrderById(Number(req.params.id));
+            res.set('Content-Type', 'text/plain');
+            res.send(`Order with ID: "${req.params.id}" completed`);
         } catch (error: any) {
             res.status(error.status);
             res.send(error.message);

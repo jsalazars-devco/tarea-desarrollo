@@ -1,6 +1,7 @@
 import express from 'express';
 import { gameController } from '../../dependencies';
 import { cors, corsWithOptions } from '../../../shared/infrastructure/cors';
+import { AuthController } from '../../../users/infrastructure/rest-api/auth/authController';
 
 const gameRouter = express.Router();
 
@@ -11,6 +12,7 @@ gameRouter.route('/')
     )
     .post(
         corsWithOptions,
+        AuthController.verifyUser,
         gameController.createGame.bind(gameController)
     );
 
@@ -21,10 +23,13 @@ gameRouter.route('/:id')
     )
     .put(
         corsWithOptions,
+        AuthController.verifyUser,
         gameController.updateOrCreateGameById.bind(gameController)
     )
     .delete(
         corsWithOptions,
+        AuthController.verifyUser,
+        AuthController.verifyAdmin,
         gameController.deleteGameById.bind(gameController)
     );
 

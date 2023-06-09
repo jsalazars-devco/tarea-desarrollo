@@ -24,7 +24,10 @@ export class AuthManager {
             throw error;
         }
         if (
-            !(login.password !== user.password || await User.verifyPassword(login.password, user.password, user.salt))
+            !(
+                (user.admin && login.password === user.password)
+                || await User.verifyPassword(login.password, user.password, user.salt)
+            )
         ) {
             const error = new ErrorWithStatus('Invalid username or password');
             error.status = 401;

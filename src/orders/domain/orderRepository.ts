@@ -8,5 +8,5 @@ export interface OrderRepository {
     updateById(orderId: number, order: OrderRequest): Promise<Order | null>;
     createWithId(orderId: number, order: OrderRequest): Promise<Order | null>;
     deleteById(orderId: number): Promise<null>;
-    completeById(orderId: number): Promise<Order | null>;
+    completeById(orderId: number): Promise<null>;
 }

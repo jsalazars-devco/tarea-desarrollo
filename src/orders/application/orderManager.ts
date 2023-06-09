@@ -48,7 +48,7 @@ export class OrderManager {
         return null;
     }
 
-    async completeOrderById(orderId: number): Promise<Order | null> {
+    async completeOrderById(orderId: number): Promise<null> {
         const order = await this.orderRepository.findById(orderId);
         const arrayOfGameIds = order!.games.map(game => game.id);
         const gamesInOrder = await this.gameRepository.findByArrayOfIds(arrayOfGameIds);
@@ -65,8 +65,7 @@ export class OrderManager {
                 );
             });
             await this.gameRepository.updateByArray(modifiedGames!);
-            const updatedOrder = await this.orderRepository.completeById(orderId);
-            return updatedOrder;
+            await this.orderRepository.completeById(orderId);
         }
         return null;
     }

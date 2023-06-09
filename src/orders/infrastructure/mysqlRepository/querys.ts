@@ -7,6 +7,7 @@ export const FIND_ALL =
     FROM orders
     LEFT JOIN order_games ON orders.id = order_games.order_id
     LEFT JOIN games ON order_games.game_id = games.id
+    WHERE orders.completed = false
     GROUP BY orders.id
     `;
 
@@ -19,7 +20,7 @@ export const FIND_BY_ID =
     FROM orders
     LEFT JOIN order_games ON orders.id = order_games.order_id
     LEFT JOIN games ON order_games.game_id = games.id
-    WHERE orders.id = ?
+    WHERE orders.completed = false AND orders.id = ?
     GROUP BY orders.id
     `;
 

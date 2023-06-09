@@ -183,7 +183,6 @@ export class MysqlGameRepository implements GameRepository {
             const values = Object.values(game);
             values.shift();
             values.push(game.id);
-            console.log(values);
             return await this.executeMysqlQuery(UPDATE_BY_ID, values);
         }));
     }

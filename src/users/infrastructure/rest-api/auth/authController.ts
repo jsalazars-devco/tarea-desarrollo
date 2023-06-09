@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthManager } from '../../../application/authManager';
 import ErrorWithStatus from '../../../../shared/domain/errorWithStatus';
+import { TokenRequest } from '../../../domain/auth/tokenRequestModel';
 
 export class AuthController {
 
@@ -38,6 +39,32 @@ export class AuthController {
         } catch (error: any) {
             res.status(error.status);
             res.send(error.message);
+        }
+    }
+
+    static verifyUser(req: Request, res: Response, next: NextFunction) {
+        try {
+            const token = req.header('Authorization')?.split(' ')[1];
+            if (!token) {
+                const error = new ErrorWithStatus('Authorization token missing');
+                error.status = 401;
+                throw error;
+            }
+            req.user = new TokenRequest(token).getTokenInfo();
+            next();
+        } catch (error: any) {
+            res.status(error.status);
+            res.send(error.message);
+        }
+    }
+
+    static verifyAdmin(req: any, res: Response, next: NextFunction) {
+        if (req.user.admin) {
+            return next();
+        }
+        else {
+            res.status(403);
+            res.send('You are not authorized to perform this operation!');
         }
     }
 }

@@ -9,10 +9,10 @@ interface IJwtVerify extends LoginResponse {
 }
 
 export class TokenRequest {
-    readonly decodedToken: IJwtVerify;
+    private decodedToken: IJwtVerify;
 
     constructor(
-        readonly token: string,
+        token: string,
     ) {
         if (
             typeof token !== 'string'

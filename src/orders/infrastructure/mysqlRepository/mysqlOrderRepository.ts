@@ -10,8 +10,8 @@ import {
     UPDATE_BY_ID, UPDATE_GAME_IN_ORDER
 } from './querys';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
-import { GameInOrder } from '../../domain/gameInOrderModel';
 import { OrderRequestWithId } from '../../domain/orderRequestWithIdModel';
+import { orderGamesAdapter } from './mysqlOrderGamesAdapter';
 
 export class MysqlOrderRepository implements OrderRepository {
 
@@ -30,31 +30,7 @@ export class MysqlOrderRepository implements OrderRepository {
 
 
         const orders = ordersInDb.map((order: RowDataPacket) => {
-            if (order.games) {
-                const games = order.games.split(',').map((game: string) => {
-                    const gameInfo = game.split(':');
-                    return new GameInOrder(
-                        Number(gameInfo[0]),
-                        Number(gameInfo[1]),
-                        Number(gameInfo[2]),
-                    );
-                });
-
-                return new Order(
-                    order.id,
-                    order.customer,
-                    games,
-                    Boolean(order.completed),
-                );
-            }
-            else {
-                return new Order(
-                    order.id,
-                    order.customer,
-                    [],
-                    Boolean(order.completed),
-                );
-            }
+            return orderGamesAdapter(order);
         });
 
         return orders;
@@ -75,32 +51,7 @@ export class MysqlOrderRepository implements OrderRepository {
 
         const createdOrder = await this.executeMysqlQuery(FIND_BY_ID, [newOrder.insertId]) as RowDataPacket[];
 
-        if (createdOrder[0].games) {
-            const games = createdOrder[0].games.split(',').map((game: string) => {
-                const gameInfo = game.split(':');
-                return new GameInOrder(
-                    Number(gameInfo[0]),
-                    Number(gameInfo[1]),
-                    Number(gameInfo[2]),
-                );
-
-            });
-
-            return new Order(
-                createdOrder[0].id,
-                createdOrder[0].customer,
-                games,
-                Boolean(createdOrder[0].completed),
-            );
-        }
-        else {
-            return new Order(
-                createdOrder[0].id,
-                createdOrder[0].customer,
-                [],
-                Boolean(createdOrder[0].completed),
-            );
-        }
+        return orderGamesAdapter(createdOrder[0]);
     }
 
     async findById(orderId: number): Promise<Order | null> {
@@ -113,31 +64,7 @@ export class MysqlOrderRepository implements OrderRepository {
             throw error;
         }
 
-        if (order[0].games) {
-            const games = order[0].games.split(',').map((game: string) => {
-                const gameInfo = game.split(':');
-                return new GameInOrder(
-                    Number(gameInfo[0]),
-                    Number(gameInfo[1]),
-                    Number(gameInfo[2]),
-                );
-            });
-
-            return new Order(
-                order[0].id,
-                order[0].customer,
-                games,
-                Boolean(order[0].completed),
-            );
-        }
-        else {
-            return new Order(
-                order[0].id,
-                order[0].customer,
-                [],
-                Boolean(order[0].completed),
-            );
-        }
+        return orderGamesAdapter(order[0]);
     }
 
     async updateById(orderId: number, order: OrderRequest): Promise<Order | null> {
@@ -178,31 +105,7 @@ export class MysqlOrderRepository implements OrderRepository {
 
         const data = await this.executeMysqlQuery(FIND_BY_ID, [orderId]) as RowDataPacket[];
 
-        if (data[0].games) {
-            const games = data[0].games.split(',').map((game: string) => {
-                const gameInfo = game.split(':');
-                return new GameInOrder(
-                    Number(gameInfo[0]),
-                    Number(gameInfo[1]),
-                    Number(gameInfo[2]),
-                );
-            });
-
-            return new Order(
-                data[0].id,
-                data[0].customer,
-                games,
-                Boolean(data[0].completed),
-            );
-        }
-        else {
-            return new Order(
-                data[0].id,
-                data[0].customer,
-                [],
-                Boolean(data[0].completed),
-            );
-        }
+        return orderGamesAdapter(data[0]);
     }
 
     async createWithId(orderId: number, order: OrderRequest): Promise<Order | null> {
@@ -226,32 +129,7 @@ export class MysqlOrderRepository implements OrderRepository {
 
         const data = await this.executeMysqlQuery(FIND_BY_ID, [orderRequest.id]) as RowDataPacket[];
 
-        if (data[0].games) {
-            const games = data[0].games.split(',').map((game: string) => {
-                const gameInfo = game.split(':');
-                return new GameInOrder(
-                    Number(gameInfo[0]),
-                    Number(gameInfo[1]),
-                    Number(gameInfo[2]),
-                );
-            });
-
-            return new Order(
-                data[0].id,
-                data[0].customer,
-                games,
-                Boolean(data[0].completed),
-            );
-        }
-        else {
-            return new Order(
-                data[0].id,
-                data[0].customer,
-                [],
-                Boolean(data[0].completed),
-            );
-        }
-
+        return orderGamesAdapter(data[0]);
     }
 
     async deleteById(orderId: number): Promise<null> {
@@ -269,7 +147,7 @@ export class MysqlOrderRepository implements OrderRepository {
         return null;
     }
 
-    async completeById(orderId: number): Promise<Order | null> {
+    async completeById(orderId: number): Promise<null> {
 
         const orderOnDb = await this.executeMysqlQuery(FIND_BY_ID, [orderId]) as RowDataPacket[];
 
@@ -280,33 +158,6 @@ export class MysqlOrderRepository implements OrderRepository {
         }
 
         await this.executeMysqlQuery(PAY_BY_ID, [orderId]);
-
-        const data = await this.executeMysqlQuery(FIND_BY_ID, [orderId]) as RowDataPacket[];
-
-        if (data[0].games) {
-            const games = data[0].games.split(',').map((game: string) => {
-                const gameInfo = game.split(':');
-                return new GameInOrder(
-                    Number(gameInfo[0]),
-                    Number(gameInfo[1]),
-                    Number(gameInfo[2]),
-                );
-            });
-
-            return new Order(
-                data[0].id,
-                data[0].customer,
-                games,
-                Boolean(data[0].completed),
-            );
-        }
-        else {
-            return new Order(
-                data[0].id,
-                data[0].customer,
-                [],
-                Boolean(data[0].completed),
-            );
-        }
+        return null;
     }
 }
