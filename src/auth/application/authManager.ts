@@ -1,10 +1,10 @@
 import ErrorWithStatus from '../../shared/domain/errorWithStatus';
-import { AuthRepository } from '../domain/auth/authRepository';
-import { LoginRequest } from '../domain/auth/loginRequestModel';
-import { LoginResponse } from '../domain/auth/loginResponseModel';
-import { TokenRequest } from '../domain/auth/tokenRequestModel';
-import { User } from '../domain/users/userModel';
-import { UserResponse } from '../domain/users/userResponseModel';
+import { AuthRepository } from '../domain/authRepository';
+import { LoginRequest } from '../domain/loginRequestModel';
+import { LoginResponse } from '../domain/loginResponseModel';
+import { TokenRequest } from '../domain/tokenRequestModel';
+import { User } from '../../users/domain/userModel';
+import { UserResponse } from '../../users/domain/userResponseModel';
 
 export class AuthManager {
     constructor(

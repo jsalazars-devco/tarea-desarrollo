@@ -1,11 +1,11 @@
 import MysqlDatabaseConnection from '../../../shared/infrastructure/mysqlConnection';
-import { User } from '../../domain/users/userModel';
-import { UserRequest } from '../../domain/users/userRequestModel';
-import { UserRequestWithId } from '../../domain/users/userRequestWithIdModel';
-import { UserResponse } from '../../domain/users/userResponseModel';
-import { UserRepository } from '../../domain/users/userRepository';
+import { User } from '../../domain/userModel';
+import { UserRequest } from '../../domain/userRequestModel';
+import { UserRequestWithId } from '../../domain/userRequestWithIdModel';
+import { UserResponse } from '../../domain/userResponseModel';
+import { UserRepository } from '../../domain/userRepository';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { UserDbRequest } from '../../domain/users/userDbRequestModel';
+import { UserDbRequest } from '../../domain/userDbRequestModel';
 import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_USERNAME, UPDATE_BY_ID } from './querys';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 

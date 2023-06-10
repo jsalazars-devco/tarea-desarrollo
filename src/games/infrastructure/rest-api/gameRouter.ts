@@ -1,7 +1,7 @@
 import express from 'express';
 import { gameController } from '../../dependencies';
 import { cors, corsWithOptions } from '../../../shared/infrastructure/cors';
-import { AuthController } from '../../../users/infrastructure/rest-api/auth/authController';
+import { AuthController } from '../../../auth/infrastructure/rest-api/authController';
 
 const gameRouter = express.Router();
 

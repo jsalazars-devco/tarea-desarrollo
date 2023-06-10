@@ -1,5 +1,5 @@
-import { JWT_EXPIRATION_TIME, JWT_SECRET_KEY } from '../../../../config';
-import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
+import { JWT_EXPIRATION_TIME, JWT_SECRET_KEY } from '../../../config';
+import ErrorWithStatus from '../../shared/domain/errorWithStatus';
 import jwt from 'jsonwebtoken';
 
 export class LoginResponse {

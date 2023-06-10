@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { AuthManager } from '../../../application/authManager';
-import ErrorWithStatus from '../../../../shared/domain/errorWithStatus';
-import { TokenRequest } from '../../../domain/auth/tokenRequestModel';
+import { AuthManager } from '../../application/authManager';
+import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
+import { TokenRequest } from '../../domain/tokenRequestModel';
 
 export class AuthController {
 

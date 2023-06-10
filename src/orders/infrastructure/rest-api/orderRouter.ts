@@ -1,7 +1,7 @@
 import express from 'express';
 import { orderController } from '../../dependencies';
 import { corsWithOptions } from '../../../shared/infrastructure/cors';
-import { AuthController } from '../../../users/infrastructure/rest-api/auth/authController';
+import { AuthController } from '../../../auth/infrastructure/rest-api/authController';
 
 const orderRouter = express.Router();
 

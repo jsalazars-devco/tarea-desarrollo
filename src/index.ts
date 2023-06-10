@@ -1,8 +1,8 @@
 import express from 'express';
 import { gameRouter } from './games/infrastructure/rest-api/gameRouter';
 import { orderRouter } from './orders/infrastructure/rest-api/orderRouter';
-import { userRouter } from './users/infrastructure/rest-api/users/userRouter';
-import { authRouter } from './users/infrastructure/rest-api/auth/authRouter';
+import { userRouter } from './users/infrastructure/rest-api/userRouter';
+import { authRouter } from './auth/infrastructure/rest-api/authRouter';
 import { PORT } from '../config';
 import logger from 'morgan';
 

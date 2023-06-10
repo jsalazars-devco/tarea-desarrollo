@@ -1,7 +1,7 @@
-import { UserDbRequest } from '../domain/users/userDbRequestModel';
-import { UserRepository } from '../domain/users/userRepository';
-import { UserRequest } from '../domain/users/userRequestModel';
-import { UserResponse } from '../domain/users/userResponseModel';
+import { UserDbRequest } from '../domain/userDbRequestModel';
+import { UserRepository } from '../domain/userRepository';
+import { UserRequest } from '../domain/userRequestModel';
+import { UserResponse } from '../domain/userResponseModel';
 
 export class UserManager {
     constructor(

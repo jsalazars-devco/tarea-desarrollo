@@ -1,5 +1,5 @@
 import { User } from './userModel';
-import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
+import ErrorWithStatus from '../../shared/domain/errorWithStatus';
 import { UserDbRequest } from './userDbRequestModel';
 
 export class UserRequestWithId implements Omit<User, 'salt'> {

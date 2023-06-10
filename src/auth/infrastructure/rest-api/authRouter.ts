@@ -1,6 +1,6 @@
 import express from 'express';
-import { authController } from '../../../dependencies';
-import { corsWithOptions } from '../../../../shared/infrastructure/cors';
+import { authController } from '../../../users/dependencies';
+import { corsWithOptions } from '../../../shared/infrastructure/cors';
 import { AuthController } from './authController';
 
 const authRouter = express.Router();

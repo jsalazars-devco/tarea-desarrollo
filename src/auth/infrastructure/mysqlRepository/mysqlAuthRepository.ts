@@ -1,11 +1,11 @@
 import { RowDataPacket } from 'mysql2/promise';
 import MysqlDatabaseConnection from '../../../shared/infrastructure/mysqlConnection';
-import { AuthRepository } from '../../domain/auth/authRepository';
-import { LoginRequest } from '../../domain/auth/loginRequestModel';
+import { AuthRepository } from '../../domain/authRepository';
+import { LoginRequest } from '../../domain/loginRequestModel';
 import { FIND_BY_ID, FIND_BY_USERNAME } from './querys';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
-import { User } from '../../domain/users/userModel';
-import { UserResponse } from '../../domain/users/userResponseModel';
+import { User } from '../../../users/domain/userModel';
+import { UserResponse } from '../../../users/domain/userResponseModel';
 
 export class MysqlAuthRepository implements AuthRepository {
 

@@ -1,6 +1,6 @@
-import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
+import ErrorWithStatus from '../../shared/domain/errorWithStatus';
 import jwt, { Algorithm, VerifyOptions } from "jsonwebtoken";
-import { JWT_SECRET_KEY } from '../../../../config';
+import { JWT_SECRET_KEY } from '../../../config';
 import { LoginResponse } from './loginResponseModel';
 
 interface IJwtVerify extends LoginResponse {

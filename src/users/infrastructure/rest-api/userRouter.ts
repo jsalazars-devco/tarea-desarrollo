@@ -1,7 +1,7 @@
 import express from 'express';
-import { userController } from '../../../dependencies';
-import { corsWithOptions } from '../../../../shared/infrastructure/cors';
-import { AuthController } from '../auth/authController';
+import { userController } from '../../dependencies';
+import { corsWithOptions } from '../../../shared/infrastructure/cors';
+import { AuthController } from '../../../auth/infrastructure/rest-api/authController';
 
 const userRouter = express.Router();
 
@@ -23,6 +23,7 @@ userRouter.route('/:id')
     .get(
         corsWithOptions,
         AuthController.verifyUser,
+        AuthController.verifyAdmin,
         userController.findUserById.bind(userController)
     )
     .put(
