@@ -18,7 +18,7 @@ export class TokenRequest {
             typeof token !== 'string'
         ) {
             const error = new ErrorWithStatus('Invalid token');
-            error.status = 403;
+            error.status = 401;
             throw error;
         }
 
@@ -34,7 +34,7 @@ export class TokenRequest {
                 throw err;
             }
             const err = new ErrorWithStatus('Invalid token');
-            err.status = 403;
+            err.status = 401;
             throw err;
         }
     }

@@ -75,8 +75,8 @@ export class MysqlUserRepository implements UserRepository {
         const data = await this.executeMysqlQuery(FIND_BY_ID, [userId]) as RowDataPacket[];
 
         if (data.length === 0) {
-            const error = new ErrorWithStatus('Invalid ID');
-            error.status = 403;
+            const error = new ErrorWithStatus('User not found');
+            error.status = 404;
             throw error;
         }
 
@@ -143,8 +143,8 @@ export class MysqlUserRepository implements UserRepository {
         const data = await this.executeMysqlQuery(FIND_BY_ID, [userId]) as RowDataPacket[];
 
         if (data.length === 0) {
-            const error = new ErrorWithStatus('Invalid ID');
-            error.status = 403;
+            const error = new ErrorWithStatus('User not found');
+            error.status = 404;
             throw error;
         }
 

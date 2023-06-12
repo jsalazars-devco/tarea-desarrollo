@@ -13,10 +13,10 @@ const initApp = () => {
     app.use(express.json());
     app.disable('x-powered-by');
 
-    app.use('/api/games', gameRouter);
+    app.use('/games', gameRouter);
     app.use('/users', userRouter);
     app.use('/auth', authRouter);
-    app.use('/api/orders', orderRouter);
+    app.use('/orders', orderRouter);
 
     const port = PORT;
     app.listen(port, () => {

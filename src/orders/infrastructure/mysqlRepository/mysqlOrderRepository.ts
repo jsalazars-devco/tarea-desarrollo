@@ -11,7 +11,7 @@ import {
 } from './querys';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 import { OrderRequestWithId } from '../../domain/orderRequestWithIdModel';
-import { orderGamesAdapter } from './mysqlOrderGamesAdapter';
+import { orderGamesAdapter } from './OrderGamesAdapter';
 
 export class MysqlOrderRepository implements OrderRepository {
 
@@ -59,8 +59,8 @@ export class MysqlOrderRepository implements OrderRepository {
         const order = await this.executeMysqlQuery(FIND_BY_ID, [orderId]) as RowDataPacket[];
 
         if (order.length === 0) {
-            const error = new ErrorWithStatus('Invalid ID');
-            error.status = 403;
+            const error = new ErrorWithStatus('Order not found');
+            error.status = 404;
             throw error;
         }
 

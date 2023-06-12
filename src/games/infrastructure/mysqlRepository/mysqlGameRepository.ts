@@ -78,8 +78,8 @@ export class MysqlGameRepository implements GameRepository {
         const data = await this.executeMysqlQuery(FIND_BY_ID, [gameId]) as RowDataPacket[];
 
         if (data.length === 0) {
-            const error = new ErrorWithStatus('Invalid ID');
-            error.status = 403;
+            const error = new ErrorWithStatus('Game not found');
+            error.status = 404;
             throw error;
         }
 

@@ -28,7 +28,7 @@ URL_WHITELIST=your_url_1,your_url_2 #NOTE: The URLS must be separated by commas,
 
 #Token secret for JWT
 JWT_SECRET_KEY=your_token_secret_key
-JWT_EXPIRATION_TIME=your_toke_expiration_time
+JWT_EXPIRATION_TIME=your_token_expiration_time
 ```
 
 - PORT=El puerto en el que se quiere lanzar el servicio
@@ -58,7 +58,23 @@ CREATE TABLE users (
 	salt VARCHAR(255) NOT NULL,
 	admin BOOLEAN NOT NULL
 )
+
+CREATE TABLE orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    customer JSON,
+    completed BOOL
+);
+
+CREATE TABLE order_games (
+    order_id INT,
+    game_id INT,
+    quantity INT,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (game_id) REFERENCES games(id)
+);
 ```
+
+Y en la tabla `users` cree un usuario Administrador con una contraseña de su elección y admin=1.
 
 ## Instalación
 
@@ -85,4 +101,8 @@ Compilar el programa
 npm run build
 ```
 
-Este comando generará un carpeta /dist con todos los archivos necesarios para su despliegue.
+Este comando generará una carpeta /dist con todos los archivos necesarios para su despliegue. Una vez compilado se corre con el siguiente comando
+
+```
+npm start
+```
