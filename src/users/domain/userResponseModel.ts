@@ -1,7 +1,7 @@
 import { User } from './userModel';
 import ErrorWithStatus from '../../shared/domain/errorWithStatus';
 
-export class UserResponse implements Omit<User, 'password' | 'salt'> {
+export class UserResponse implements Omit<User, 'password'> {
     constructor(
         readonly id: number,
         readonly username: string,

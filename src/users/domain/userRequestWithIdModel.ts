@@ -2,7 +2,7 @@ import { User } from './userModel';
 import ErrorWithStatus from '../../shared/domain/errorWithStatus';
 import { UserDbRequest } from './userDbRequestModel';
 
-export class UserRequestWithId implements Omit<User, 'salt'> {
+export class UserRequestWithId {
     constructor(
         readonly id: number,
         readonly username: string,
@@ -25,17 +25,10 @@ export class UserRequestWithId implements Omit<User, 'salt'> {
     }
 
     public async returnUserDbRequest(): Promise<UserDbRequest> {
-        const { salt, hashedPassword } = await User.hashPassword(this.password);
-        if (this.admin) return new UserDbRequest(
-            this.username,
-            this.password,
-            salt,
-            this.admin
-        );
+        const hashedPassword = await User.hashPassword(this.password);
         return new UserDbRequest(
             this.username,
             hashedPassword,
-            salt,
             this.admin
         );
     }

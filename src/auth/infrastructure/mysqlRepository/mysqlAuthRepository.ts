@@ -24,7 +24,6 @@ export class MysqlAuthRepository implements AuthRepository {
                 data[0].id,
                 data[0].username,
                 data[0].password,
-                data[0].salt,
                 Boolean(data[0].admin),
             );
         } catch (error) {

@@ -6,7 +6,6 @@ export class User {
         readonly id: number,
         readonly username: string,
         readonly password: string,
-        readonly salt: string,
         readonly admin: boolean,
     ) {
         if (Number.isNaN(id) || id < 0) {
@@ -17,7 +16,6 @@ export class User {
         if (
             typeof username !== 'string'
             || typeof password !== 'string'
-            || typeof salt !== 'string'
             || typeof admin !== 'boolean'
         ) {
             const error = new ErrorWithStatus('Invalid user input');
@@ -26,13 +24,13 @@ export class User {
         }
     }
 
-    public static hashPassword = async (password: string): Promise<{ salt: string; hashedPassword: string; }> => {
+    public static hashPassword = async (password: string): Promise<string> => {
         const saltRounds = 10;
 
         try {
             const salt = await bcrypt.genSalt(saltRounds);
             const hashedPassword = await bcrypt.hash(password, salt);
-            return { salt, hashedPassword };
+            return hashedPassword;
         } catch (error) {
             throw new Error('Password hashing failed');
         }
@@ -41,11 +39,9 @@ export class User {
     public static verifyPassword = async (
         password: string,
         hashedPassword: string,
-        salt: string
     ): Promise<boolean> => {
         try {
-            const hash = await bcrypt.hash(password, salt);
-            return hash === hashedPassword;
+            return await bcrypt.compare(password, hashedPassword);
         } catch (error) {
             throw new Error('Password verification failed');
         }

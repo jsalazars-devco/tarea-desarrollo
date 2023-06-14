@@ -41,7 +41,7 @@ export class MysqlUserRepository implements UserRepository {
         if (data.length > 0) {
             if (
                 data[0].username !== user.username
-                || !(await User.verifyPassword(user.password, data[0].password, data[0].salt))
+                || !(await User.verifyPassword(user.password, data[0].password))
                 || Boolean(data[0].admin) !== user.admin
             ) {
                 const error = new ErrorWithStatus('To modify the user, try the PUT /users/{userId} endpoint');
