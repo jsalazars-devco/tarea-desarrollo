@@ -17,28 +17,36 @@ cd tarea-desarrollo/
 # Server Configuration
 PORT=your_port
 
+## CORS whitelist URLs
+URL_WHITELIST=your_url_1,your_url_2 #NOTE: The URLS must be separated by commas, without spaces.
+
+## Token secret for JWT
+JWT_SECRET_KEY=your_token_secret_key
+JWT_EXPIRATION_TIME=your_toke_expiration_time
+
 # MySQL Connection Parameters
 DB_HOST=localhost
 DB_USER=your_username
 DB_PASSWORD=your_password
 DB_DATABASE=your_database
 
-#CORS whitelist URLs
-URL_WHITELIST=your_url_1,your_url_2 #NOTE: The URLS must be separated by commas, without spaces.
-
-#Token secret for JWT
-JWT_SECRET_KEY=your_token_secret_key
-JWT_EXPIRATION_TIME=your_token_expiration_time
+# Adminer Parameters
+ADMINER_PORT=your_adminer_port
 ```
 
 - PORT=El puerto en el que se quiere lanzar el servicio
+
+- URL_WHITELIST=Lista de URLs que pueden realizar peticiones POST, PUT, DELETE al servicio
+
+- JWT_SECRET_KEY=Llave secreta para la creación de los JWTs
+- JWT_EXPIRATION_TIME=Tiempo en el que se desea que expiren los JWTs
+
 - DB_HOST=El host en el cual se encuentra la base de datos
 - DB_USER=Usuario de la base de datos
 - DB_PASSWORD=Contraseña de la base de datos
 - DB_DATABASE=Base de datos a la cual te se quiere conectar
-- URL_WHITELIST=Lista de URLs que pueden realizar peticiones POST, PUT, DELETE al servicio
-- JWT_SECRET_KEY=Llave secreta para la creación de los JWTs
-- JWT_EXPIRATION_TIME=Tiempo en el que se desea que expiren los JWTs
+
+- ADMINER_PORT=Puerto con el cual conectarse a Adminer
 
 3. Crear una base de datos MySQL con el nombre puesto en la variable de entorno `DB_DATABASE` con las siguientes tablas:
 
@@ -116,3 +124,5 @@ docker-compose up -d
 ```
 
 Al utilizar estos comandos, se crearán automáticamente las tablas necesarias para su funcionamiento y un usuario **admin** con contraseña **admin** que será el administrador por defecto. Se recomienda cambiar la contraseña.
+
+El despliegue viene con Adminer, una aplicación con la cuál podrá ver la base de datos que está utilizando el servidor.
