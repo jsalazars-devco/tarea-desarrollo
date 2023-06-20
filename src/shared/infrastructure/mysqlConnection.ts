@@ -28,10 +28,6 @@ class MysqlDatabaseConnection {
         }
     }
 
-    public getConnection(): Connection {
-        return this.connection;
-    }
-
     public async close(): Promise<void> {
         if (this.connection) {
             await this.connection.end();

@@ -42,7 +42,7 @@ export class AuthController {
         }
     }
 
-    static verifyUser(req: Request, res: Response, next: NextFunction) {
+    static verifyUser(req: any, res: Response, next: NextFunction) {
         try {
             const token = req.header('Authorization')?.split(' ')[1];
             if (!token) {
