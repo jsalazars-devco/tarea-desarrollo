@@ -9,11 +9,12 @@ export class AuthController {
         private readonly authManager: AuthManager
     ) { }
 
-    async login(req: Request, res: Response) {
+    login(req: Request, res: Response) {
         try {
-            const user = await this.authManager.login(req.body);
-            res.status(200);
-            res.send(user);
+            this.authManager.login(req.body).then((user) => {
+                res.status(200);
+                res.send(user);
+            });
         } catch (error: any) {
             res.status(error.status);
             res.send(error.message);
@@ -25,7 +26,7 @@ export class AuthController {
         res.send('Logout successful');
     }
 
-    async me(req: Request, res: Response) {
+    me(req: Request, res: Response) {
         try {
             const token = req.header('Authorization')?.split(' ')[1];
             if (!token) {
@@ -33,9 +34,10 @@ export class AuthController {
                 error.status = 401;
                 throw error;
             }
-            const user = await this.authManager.me(token);
-            res.status(200);
-            res.send(user);
+            this.authManager.me(token).then((user) => {
+                res.status(200);
+                res.send(user);
+            });
         } catch (error: any) {
             res.status(error.status);
             res.send(error.message);
