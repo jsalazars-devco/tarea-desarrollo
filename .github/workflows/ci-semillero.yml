@@ -27,6 +27,10 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v1.9.1
       - name: SonarQube Quality Gate Check
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        
       
   docker-build:
     runs-on: ubuntu-latest
