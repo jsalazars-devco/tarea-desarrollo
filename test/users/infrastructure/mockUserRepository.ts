@@ -3,7 +3,9 @@ import { UserResponse } from '../../../src/users/domain/userResponseModel';
 
 export class MockUserRepository implements UserRepository {
 
-    constructor() { }
+    constructor() {
+        //This is intentional
+    }
 
     async findAll(): Promise<UserResponse[] | null> {
         return null;
