@@ -7,42 +7,38 @@ export class UserController {
         private readonly userManager: UserManager
     ) { }
 
-    async findUsers(_req: Request, res: Response) {
-        try {
-            const users = await this.userManager.findUsers();
+    findUsers(_req: Request, res: Response) {
+        this.userManager.findUsers().then(users => {
             res.status(200);
             res.send(users);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async createUser(req: Request, res: Response) {
-        try {
-            const user = await this.userManager.createUser(req.body);
+    createUser(req: Request, res: Response) {
+        this.userManager.createUser(req.body).then(user => {
             res.status(201);
             res.send(user);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async findUserById(req: Request, res: Response) {
-        try {
-            const user = await this.userManager.findUserById(Number(req.params.id));
+    findUserById(req: Request, res: Response) {
+        this.userManager.findUserById(Number(req.params.id)).then(user => {
             res.status(200);
             res.send(user);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async updateOrCreateUserById(req: Request, res: Response) {
-        try {
-            const updatedUser = await this.userManager.updateUserById(Number(req.params.id), req.body);
+    updateOrCreateUserById(req: Request, res: Response) {
+        this.userManager.updateUserById(Number(req.params.id), req.body).then(async (updatedUser) => {
             if (updatedUser !== null) {
                 res.status(200);
                 res.send(updatedUser);
@@ -54,22 +50,21 @@ export class UserController {
                     res.send(createdUser);
                 }
             }
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async deleteUserById(req: Request, res: Response) {
-        try {
-            await this.userManager.deleteUserById(Number(req.params.id));
+    deleteUserById(req: Request, res: Response) {
+        this.userManager.deleteUserById(Number(req.params.id)).then(() => {
             res.status(200);
             res.set('Content-Type', 'text/plain');
             res.send(`User with ID: "${req.params.id}" deleted`);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
 }

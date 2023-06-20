@@ -7,42 +7,38 @@ export class OrderController {
         private readonly orderManager: OrderManager
     ) { }
 
-    async findOrders(_req: Request, res: Response) {
-        try {
-            const orders = await this.orderManager.findOrders();
+    findOrders(_req: Request, res: Response) {
+        this.orderManager.findOrders().then(orders => {
             res.status(200);
             res.send(orders);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async createOrder(req: Request, res: Response) {
-        try {
-            const order = await this.orderManager.createOrder(req.body);
+    createOrder(req: Request, res: Response) {
+        this.orderManager.createOrder(req.body).then(order => {
             res.status(201);
             res.send(order);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async findOrderById(req: Request, res: Response) {
-        try {
-            const order = await this.orderManager.findOrderById(Number(req.params.id));
+    findOrderById(req: Request, res: Response) {
+        this.orderManager.findOrderById(Number(req.params.id)).then(order => {
             res.status(200);
             res.send(order);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async updateOrCreateOrderById(req: Request, res: Response) {
-        try {
-            const updatedOrder = await this.orderManager.updateOrderById(Number(req.params.id), req.body);
+    updateOrCreateOrderById(req: Request, res: Response) {
+        this.orderManager.updateOrderById(Number(req.params.id), req.body).then(async (updatedOrder) => {
 
             if (updatedOrder !== null) {
                 res.status(200);
@@ -55,33 +51,31 @@ export class OrderController {
                     res.send(createdOrder);
                 }
             }
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async deleteOrderById(req: Request, res: Response) {
-        try {
-            await this.orderManager.deleteOrderById(Number(req.params.id));
+    deleteOrderById(req: Request, res: Response) {
+        this.orderManager.deleteOrderById(Number(req.params.id)).then(() => {
             res.status(200);
             res.set('Content-Type', 'text/plain');
             res.send(`Order with ID: "${req.params.id}" deleted`);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async completeOrderById(req: Request, res: Response) {
-        try {
-            await this.orderManager.completeOrderById(Number(req.params.id));
+    completeOrderById(req: Request, res: Response) {
+        this.orderManager.completeOrderById(Number(req.params.id)).then(() => {
             res.set('Content-Type', 'text/plain');
             res.send(`Order with ID: "${req.params.id}" completed`);
-        } catch (error: any) {
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
 }

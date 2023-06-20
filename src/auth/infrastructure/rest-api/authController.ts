@@ -10,18 +10,17 @@ export class AuthController {
     ) { }
 
     login(req: Request, res: Response) {
-        try {
-            this.authManager.login(req.body).then((user) => {
-                res.status(200);
-                res.send(user);
-            });
-        } catch (error: any) {
+
+        this.authManager.login(req.body).then((user) => {
+            res.status(200);
+            res.send(user);
+        }).catch((error: any) => {
             res.status(error.status);
             res.send(error.message);
-        }
+        });
     }
 
-    async logout(_req: Request, res: Response) {
+    logout(_req: Request, res: Response) {
         res.setHeader('Clear-Token', 'true');
         res.send('Logout successful');
     }
