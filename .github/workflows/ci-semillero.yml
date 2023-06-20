@@ -5,9 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  REGISTRY: docker.io
   IMAGE_NAME: "jsalazars-devco/tarea-desarrollo"
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
   build: 
@@ -25,6 +23,8 @@ jobs:
         run: "npm run build"
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.9.1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: SonarQube Quality Gate Check
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
         timeout-minutes: 5
