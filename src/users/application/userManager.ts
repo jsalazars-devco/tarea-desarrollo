@@ -13,7 +13,7 @@ export class UserManager {
         return users;
     }
 
-    async createUser(user: UserRequest): Promise<UserResponse | null> {
+    async createUser(user: any): Promise<UserResponse | null> {
         const userToCreate: UserDbRequest = await new UserRequest(
             user.username,
             user.password,
@@ -28,7 +28,7 @@ export class UserManager {
         return user;
     }
 
-    async updateUserById(userId: number, user: UserRequest): Promise<UserResponse | null> {
+    async updateUserById(userId: number, user: any): Promise<UserResponse | null> {
         const userToUpdate = await new UserRequest(
             user.username,
             user.password,
@@ -38,7 +38,7 @@ export class UserManager {
         return updatedUser;
     }
 
-    async createUserWithId(userId: number, user: UserRequest): Promise<UserResponse | null> {
+    async createUserWithId(userId: number, user: any): Promise<UserResponse | null> {
         const createdUser = await this.userRepository.createWithId(userId, user);
         return createdUser;
     }

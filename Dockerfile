@@ -1,6 +1,6 @@
 FROM node:18.14.0
 
-RUN addgroup -S user && adduser -S user -G user
+RUN groupadd -r user && useradd -r -g user user
 
 WORKDIR /app
 
