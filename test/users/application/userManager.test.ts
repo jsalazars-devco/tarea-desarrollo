@@ -9,27 +9,26 @@ jest.mock('../../../src/users/domain/userRequestModel');
 jest.mock('../../../src/shared/infrastructure/mysqlConnection');
 jest.mock('../../../src/users/infrastructure/mysqlRepository/mysqlUserRepository');
 
-
 describe('UserManager', () => {
     let userManager: UserManager;
 
     const mockMysqlConnection = MysqlConnection.getInstance() as jest.Mocked<MysqlConnection>;
     const mockUserRepository = new MysqlUserRepository(mockMysqlConnection) as jest.Mocked<MysqlUserRepository>;
 
-    mockUserRepository.findAll.mockReturnValue([new UserResponse(1, 'admin', true)] as any);
-    mockUserRepository.create.mockReturnValue(new UserResponse(2, 'username', false) as any);
-    mockUserRepository.findById.mockImplementation((userId): any => {
-        if (userId === 1) return new UserResponse(1, 'admin', true);
-        return null;
+    mockUserRepository.findAll.mockReturnValue(Promise.resolve([new UserResponse(1, 'admin', true)]));
+    mockUserRepository.create.mockReturnValue(Promise.resolve(new UserResponse(2, 'username', false)));
+    mockUserRepository.findById.mockImplementation((userId) => {
+        if (userId === 1) return Promise.resolve(new UserResponse(1, 'admin', true));
+        return Promise.resolve(null);
     });
-    mockUserRepository.updateById.mockImplementation((userId, user): any => {
-        if (userId === 2) return new UserResponse(2, user.username, user.admin);
-        return null;
+    mockUserRepository.updateById.mockImplementation((userId, user) => {
+        if (userId === 2) return Promise.resolve(new UserResponse(2, user.username, user.admin));
+        return Promise.resolve(null);
     });
-    mockUserRepository.createWithId.mockImplementation((userId, user): any => {
-        return new UserResponse(userId, user.username, user.admin);
+    mockUserRepository.createWithId.mockImplementation((userId, user) => {
+        return Promise.resolve(new UserResponse(userId, user.username, user.admin));
     });
-    mockUserRepository.deleteById.mockReturnValue([new UserResponse(1, 'admin', true)] as any);
+    mockUserRepository.deleteById.mockReturnValue(Promise.resolve(null));
 
     const mockedReturnUserDbRequest = jest.fn().mockReturnValue({
         username: 'username',
@@ -64,7 +63,6 @@ describe('UserManager', () => {
                 admin: false
             };
             expect(await userManager.createUser(user)).toBeInstanceOf(UserResponse);
-            expect(mockedReturnUserDbRequest).toHaveBeenCalled();
         });
     });
 

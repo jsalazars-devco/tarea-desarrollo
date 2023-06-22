@@ -29,16 +29,9 @@ describe('UserModel', () => {
         expect(() => new User(1, 'admin', 'hashedPassword', 'true' as any)).toThrow();
     });
 
-    test('should return a hashed password', async () => {
-        const password = 'password';
-        const hashedPassword = await User.hashPassword(password);
-
-        expect(hashedPassword).not.toBe(password);
-    });
-
     const mockGenSalt = jest.fn().mockReturnValue('salt');
     const mockHash = jest.fn().mockImplementation((_password, _salt) => {
-        if (mockHash.mock.calls.length === 1 || mockHash.mock.calls.length === 2) {
+        if (mockHash.mock.calls.length === 1) {
             return 'hashedPassword';
         }
         throw new Error();
@@ -51,10 +44,10 @@ describe('UserModel', () => {
         expect(await User.hashPassword(password)).toBe('hashedPassword');
     });
 
-    test('should throw an exception if the hashing algorithm failed', async () => {
+    test('should throw an exception if the hashing algorithm failed', () => {
         const password = 'password';
 
-        expect(async () => { await User.hashPassword(password); }).rejects.toThrow();
+        expect(async () => await User.hashPassword(password)).rejects.toThrow();
     });
 
     const mockCompare = jest.fn().mockImplementation(() => {

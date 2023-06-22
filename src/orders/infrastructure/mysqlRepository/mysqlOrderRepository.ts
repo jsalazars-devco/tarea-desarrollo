@@ -8,7 +8,7 @@ import {
     DELETE_GAMES_IN_ORDER, DELETE_GAME_IN_ORDER_BY_ID, FIND_ALL, FIND_BY_ID,
     FIND_GAMES_IN_ORDER, FIND_GAME_IN_ORDER_BY_ID, PAY_BY_ID,
     UPDATE_BY_ID, UPDATE_GAME_IN_ORDER
-} from './querys';
+} from './queries';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 import { OrderRequestWithId } from '../../domain/orderRequestWithIdModel';
 import { orderGamesAdapter } from './OrderGamesAdapter';

@@ -3,7 +3,7 @@ import { Game } from '../../domain/gameModel';
 import { GameRequest } from '../../domain/gameRequestModel';
 import { GameRepository } from '../../domain/gameRepository';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
-import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_NAME, FIND_GAMES_BY_ID, UPDATE_BY_ID } from './querys';
+import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_NAME, FIND_GAMES_BY_ID, UPDATE_BY_ID } from './queries';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 
 export class MysqlGameRepository implements GameRepository {

@@ -7,7 +7,7 @@ export class UserResponse implements Omit<User, 'password'> {
         readonly username: string,
         readonly admin: boolean,
     ) {
-        if (Number.isNaN(id) || id < 0) {
+        if (typeof id !== 'number' || Number.isNaN(id) || id < 0) {
             const error = new ErrorWithStatus('Invalid ID: Must be a positive number');
             error.status = 403;
             throw error;

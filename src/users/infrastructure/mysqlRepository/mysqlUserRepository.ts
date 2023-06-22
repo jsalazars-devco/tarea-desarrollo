@@ -6,7 +6,7 @@ import { UserResponse } from '../../domain/userResponseModel';
 import { UserRepository } from '../../domain/userRepository';
 import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { UserDbRequest } from '../../domain/userDbRequestModel';
-import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_USERNAME, UPDATE_BY_ID } from './querys';
+import { CREATE, CREATE_WITH_ID, DELETE_BY_ID, FIND_ALL, FIND_BY_ID, FIND_BY_USERNAME, UPDATE_BY_ID } from './queries';
 import ErrorWithStatus from '../../../shared/domain/errorWithStatus';
 
 export class MysqlUserRepository implements UserRepository {
