@@ -10,7 +10,7 @@ jest.mock('../../../src/shared/infrastructure/mysqlConnection');
 jest.mock('../../../src/users/infrastructure/mysqlRepository/mysqlUserRepository');
 
 
-describe("UserManager", () => {
+describe('UserManager', () => {
     let userManager: UserManager;
 
     const mockMysqlConnection = MysqlConnection.getInstance() as jest.Mocked<MysqlConnection>;
@@ -37,24 +37,26 @@ describe("UserManager", () => {
         admin: false
     });
 
-    (UserRequest as jest.Mock).mockImplementation(() => ({
-        returnUserDbRequest: mockedReturnUserDbRequest,
-    }));
+    (UserRequest as jest.Mock).mockImplementation(() => {
+        return ({
+            returnUserDbRequest: mockedReturnUserDbRequest,
+        });
+    });
 
     beforeEach(() => {
         userManager = new UserManager(mockUserRepository);
     });
 
-    describe("findAllUsers", () => {
-        test("should return an user array", async () => {
+    describe('findAllUsers', () => {
+        test('should return an user array', async () => {
             const result = await userManager.findUsers();
             expect(result).toBeInstanceOf(Array);
-            expect(result!.every((user) => user instanceof UserResponse)).toBe(true);
+            expect(result?.every((user) => user instanceof UserResponse)).toBe(true);
         });
     });
 
-    describe("createUser", () => {
-        test("should return an user if the user information is correct", async () => {
+    describe('createUser', () => {
+        test('should return an user if the user information is correct', async () => {
 
             const user = {
                 username: 'username',
@@ -66,20 +68,20 @@ describe("UserManager", () => {
         });
     });
 
-    describe("findUserById", () => {
-        test("should return the user when a user with that id exists", async () => {
+    describe('findUserById', () => {
+        test('should return the user when a user with that id exists', async () => {
             const existingUserId = 1;
             expect(await userManager.findUserById(existingUserId)).toBeInstanceOf(UserResponse);
         });
 
-        test("should return null when the user does not exist", async () => {
+        test('should return null when the user does not exist', async () => {
             const nonExistingUserId = 10;
             expect(await userManager.findUserById(nonExistingUserId)).toBeNull();
         });
     });
 
-    describe("updateUserById", () => {
-        test("should return the user modified when a user with that id exists", async () => {
+    describe('updateUserById', () => {
+        test('should return the user modified when a user with that id exists', async () => {
             const user = {
                 username: 'username',
                 password: 'password',
@@ -90,7 +92,7 @@ describe("UserManager", () => {
             expect(mockedReturnUserDbRequest).toHaveBeenCalled();
         });
 
-        test("should return null when the user does not exist", async () => {
+        test('should return null when the user does not exist', async () => {
             const user = {
                 username: 'username',
                 password: 'password',
@@ -102,21 +104,21 @@ describe("UserManager", () => {
         });
     });
 
-    describe("createUserWithId", () => {
-        test("should return the user created when a user with the given id", async () => {
+    describe('createUserWithId', () => {
+        test('should return the user created when a user with the given id', async () => {
             const user = {
                 username: 'username',
                 password: 'password',
                 admin: false
             };
             const userId = 2;
-            expect(await userManager.updateUserById(userId, user)).toBeInstanceOf(UserResponse);
+            expect(await userManager.createUserWithId(userId, user)).toBeInstanceOf(UserResponse);
             expect(mockedReturnUserDbRequest).toHaveBeenCalled();
         });
     });
 
-    describe("deleteById", () => {
-        test("should return null", async () => {
+    describe('deleteById', () => {
+        test('should return null', async () => {
             const userId = 1;
             expect(await userManager.deleteUserById(userId)).toBeNull();
             expect(mockedReturnUserDbRequest).toHaveBeenCalled();
