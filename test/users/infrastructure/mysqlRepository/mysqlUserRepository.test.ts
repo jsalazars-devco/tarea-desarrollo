@@ -30,51 +30,51 @@ describe('MysqlUserRepository', () => {
 
     spyMysqlConnectionExecute.mockImplementation((query, values): any => {
         if (query === QUERIES.FIND_ALL) {
-            return [
+            return Promise.resolve([
                 {
                     id: 1,
                     username: 'admin',
                     admin: 1,
                 }
-            ];
+            ]);
         }
         else if (query === QUERIES.FIND_BY_ID) {
             const id = values[0];
             if (id === 1) {
-                return [{
+                return Promise.resolve([{
                     id: id,
                     username: 'admin',
                     admin: 1,
-                }];
+                }]);
             }
             else if (id === 2) {
-                return [{
+                return Promise.resolve([{
                     id: id,
                     username: 'username',
                     admin: 0,
-                }];
+                }]);
 
             }
-            return [];
+            return Promise.resolve([]);
         }
         else if (query === QUERIES.FIND_BY_USERNAME) {
             const username = values[0];
             if (username === 'admin') {
-                return [{
+                return Promise.resolve([{
                     id: 1,
                     username: 'admin',
                     password: 'hashedPassword',
                     admin: 1,
-                }];
+                }]);
             }
             else {
-                return [];
+                return Promise.resolve([]);
             }
         }
         else if (query === QUERIES.CREATE || query === QUERIES.CREATE_WITH_ID || query === QUERIES.UPDATE_BY_ID || query === QUERIES.DELETE_BY_ID) {
-            return {
+            return Promise.resolve({
                 insertId: 2,
-            };
+            });
         }
     });
 
@@ -97,8 +97,8 @@ describe('MysqlUserRepository', () => {
             const result = await mysqlUserRepository.create(user);
             expect(result).toBeInstanceOf(UserResponse);
             expect(result?.id).toBe(2);
-            expect(result?.username).toBe('username');
-            expect(result?.admin).toBe(false);
+            expect(result?.username).toBe(user.username);
+            expect(result?.admin).toBe(user.admin);
         });
 
         test('should return the same user if the user is exactly the same in the database', async () => {
@@ -106,8 +106,8 @@ describe('MysqlUserRepository', () => {
             const result = await mysqlUserRepository.create(user);
             expect(result).toBeInstanceOf(UserResponse);
             expect(result?.id).toBe(1);
-            expect(result?.username).toBe('admin');
-            expect(result?.admin).toBe(true);
+            expect(result?.username).toBe(user.username);
+            expect(result?.admin).toBe(user.admin);
         });
 
         test('should throw an exception if the user is already in the database but is not exactly the same', () => {
@@ -153,8 +153,8 @@ describe('MysqlUserRepository', () => {
             const result = await mysqlUserRepository.createWithId(newUserId, values);
             expect(result).toBeInstanceOf(UserResponse);
             expect(result?.id).toBe(newUserId);
-            expect(result?.username).toBe('username');
-            expect(result?.admin).toBe(false);
+            expect(result?.username).toBe(values.username);
+            expect(result?.admin).toBe(values.admin);
         });
     });
 

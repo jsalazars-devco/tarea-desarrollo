@@ -30,12 +30,9 @@ describe('UserModel', () => {
     });
 
     const mockGenSalt = jest.fn().mockReturnValue('salt');
-    const mockHash = jest.fn().mockImplementation((_password, _salt) => {
-        if (mockHash.mock.calls.length === 1) {
-            return 'hashedPassword';
-        }
-        throw new Error();
-    });
+    const mockHash = jest.fn()
+        .mockResolvedValueOnce('hashedPassword')
+        .mockRejectedValueOnce(new Error());
     bcrypt.genSalt = mockGenSalt;
     bcrypt.hash = mockHash;
 
@@ -50,14 +47,10 @@ describe('UserModel', () => {
         expect(async () => await User.hashPassword(password)).rejects.toThrow();
     });
 
-    const mockCompare = jest.fn().mockImplementation(() => {
-        if (mockCompare.mock.calls.length === 1) {
-            return true;
-        } else if (mockCompare.mock.calls.length === 2) {
-            return false;
-        }
-        throw new Error();
-    });
+    const mockCompare = jest.fn()
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(false)
+        .mockRejectedValueOnce(new Error());
     bcrypt.compare = mockCompare;
 
     test('should return true when the hash comes from the password', async () => {

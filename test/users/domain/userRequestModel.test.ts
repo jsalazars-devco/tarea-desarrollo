@@ -5,7 +5,7 @@ import { UserDbRequest } from '../../../src/users/domain/userDbRequestModel';
 jest.mock('../../../src/users/domain/userModel');
 
 describe('UserRequestModel', () => {
-    test('should create a new user instance', () => {
+    test('should create a new user request instance', () => {
         const user = new UserRequest('admin', 'password', true);
 
         expect(user.username).toBe('admin');

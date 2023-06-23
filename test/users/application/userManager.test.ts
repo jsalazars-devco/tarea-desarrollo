@@ -15,8 +15,8 @@ describe('UserManager', () => {
     const mockMysqlConnection = MysqlConnection.getInstance() as jest.Mocked<MysqlConnection>;
     const mockUserRepository = new MysqlUserRepository(mockMysqlConnection) as jest.Mocked<MysqlUserRepository>;
 
-    mockUserRepository.findAll.mockReturnValue(Promise.resolve([new UserResponse(1, 'admin', true)]));
-    mockUserRepository.create.mockReturnValue(Promise.resolve(new UserResponse(2, 'username', false)));
+    mockUserRepository.findAll.mockResolvedValue([new UserResponse(1, 'admin', true)]);
+    mockUserRepository.create.mockResolvedValue(new UserResponse(2, 'username', false));
     mockUserRepository.findById.mockImplementation((userId) => {
         if (userId === 1) return Promise.resolve(new UserResponse(1, 'admin', true));
         return Promise.resolve(null);
@@ -28,7 +28,7 @@ describe('UserManager', () => {
     mockUserRepository.createWithId.mockImplementation((userId, user) => {
         return Promise.resolve(new UserResponse(userId, user.username, user.admin));
     });
-    mockUserRepository.deleteById.mockReturnValue(Promise.resolve(null));
+    mockUserRepository.deleteById.mockResolvedValue(null);
 
     const mockedReturnUserDbRequest = jest.fn().mockReturnValue({
         username: 'username',
@@ -62,14 +62,20 @@ describe('UserManager', () => {
                 password: 'password',
                 admin: false
             };
-            expect(await userManager.createUser(user)).toBeInstanceOf(UserResponse);
+            const createdUser = await userManager.createUser(user);
+            expect(createdUser).toBeInstanceOf(UserResponse);
+            expect(createdUser?.id).toBe(2);
+            expect(createdUser?.username).toBe(user.username);
+            expect(createdUser?.admin).toBe(user.admin);
         });
     });
 
     describe('findUserById', () => {
         test('should return the user when a user with that id exists', async () => {
             const existingUserId = 1;
-            expect(await userManager.findUserById(existingUserId)).toBeInstanceOf(UserResponse);
+            const existingUser = await userManager.findUserById(existingUserId);
+            expect(existingUser).toBeInstanceOf(UserResponse);
+            expect(existingUser?.id).toBe(existingUserId);
         });
 
         test('should return null when the user does not exist', async () => {
@@ -86,8 +92,11 @@ describe('UserManager', () => {
                 admin: false
             };
             const existingUserId = 2;
-            expect(await userManager.updateUserById(existingUserId, user)).toBeInstanceOf(UserResponse);
-            expect(mockedReturnUserDbRequest).toHaveBeenCalled();
+            const updatedUser = await userManager.updateUserById(existingUserId, user);
+            expect(updatedUser).toBeInstanceOf(UserResponse);
+            expect(updatedUser?.id).toBe(existingUserId);
+            expect(updatedUser?.username).toBe(user.username);
+            expect(updatedUser?.admin).toBe(user.admin);
         });
 
         test('should return null when the user does not exist', async () => {
@@ -98,7 +107,6 @@ describe('UserManager', () => {
             };
             const nonExistingUserId = 10;
             expect(await userManager.updateUserById(nonExistingUserId, user)).toBeNull();
-            expect(mockedReturnUserDbRequest).toHaveBeenCalled();
         });
     });
 
@@ -109,9 +117,12 @@ describe('UserManager', () => {
                 password: 'password',
                 admin: false
             };
-            const userId = 2;
-            expect(await userManager.createUserWithId(userId, user)).toBeInstanceOf(UserResponse);
-            expect(mockedReturnUserDbRequest).toHaveBeenCalled();
+            const existingUserId = 2;
+            const updatedUser = await userManager.createUserWithId(existingUserId, user);
+            expect(updatedUser).toBeInstanceOf(UserResponse);
+            expect(updatedUser?.id).toBe(existingUserId);
+            expect(updatedUser?.username).toBe(user.username);
+            expect(updatedUser?.admin).toBe(user.admin);
         });
     });
 

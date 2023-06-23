@@ -8,7 +8,7 @@ export class Game {
         readonly price: number,
         readonly imageUrl: string,
     ) {
-        if (Number.isNaN(id) || id < 0) {
+        if (typeof id !== 'number' || Number.isNaN(id) || id < 0) {
             const error = new ErrorWithStatus('Invalid ID: Must be a positive number');
             error.status = 403;
             throw error;
