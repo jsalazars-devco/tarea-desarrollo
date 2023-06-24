@@ -54,7 +54,7 @@ export class OrderManager {
         const gamesInOrder = await this.gameRepository.findByArrayOfIds(arrayOfGameIds);
         const orderCanBePaid = Order.canBeCompleted(order!, gamesInOrder!);
         if (orderCanBePaid) {
-            const modifiedGames = gamesInOrder?.map(game => {
+            const modifiedGames = gamesInOrder!.map(game => {
                 const gameInOrder = order!.games.find(g => g.id === game.id);
                 return new Game(
                     game.id,

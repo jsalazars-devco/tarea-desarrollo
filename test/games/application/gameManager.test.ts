@@ -81,7 +81,13 @@ describe('GameManager', () => {
                 imageUrl: 'imageUrl'
             };
             const existingGameId = 2;
-            expect(await gameManager.updateGameById(existingGameId, game)).toBeInstanceOf(Game);
+            const updatedGame = await gameManager.updateGameById(existingGameId, game);
+            expect(updatedGame).toBeInstanceOf(Game);
+            expect(updatedGame?.id).toBe(existingGameId);
+            expect(updatedGame?.name).toBe(game.name);
+            expect(updatedGame?.stock).toBe(game.stock);
+            expect(updatedGame?.price).toBe(game.price);
+            expect(updatedGame?.imageUrl).toBe(game.imageUrl);
         });
 
         test('should return null when the game does not exist', async () => {

@@ -5,7 +5,7 @@ import { Customer } from './customerInterface';
 import { GameInOrder } from './gameInOrderModel';
 
 export const checkOrderId = (id: number): void => {
-    if (Number.isNaN(id) || id < 0) {
+    if (typeof id !== 'number' || Number.isNaN(id) || id < 0) {
         const error = new ErrorWithStatus('Invalid Order ID: Must be a positive number');
         error.status = 403;
         throw error;
