@@ -54,9 +54,7 @@ export class AuthController {
                 error.status = 401;
                 throw error;
             }
-            console.log('antes');
             req.user = (new TokenRequest(token)).getTokenInfo();
-            console.log('despues');
             next();
         } catch (error: any) {
             res.status(error.status);
