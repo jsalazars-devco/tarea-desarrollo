@@ -21,6 +21,8 @@ jobs:
         run: "npm run test"
       - name: compilar node
         run: "npm run build"
+      - name: Verify /dist directory
+        run: "ls dist" 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.9.1
         env:
