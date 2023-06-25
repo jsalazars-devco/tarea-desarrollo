@@ -40,6 +40,7 @@ export class TokenRequest {
     }
 
     getTokenInfo() {
+        console.log(this.decodedToken);
         return this.decodedToken;
     }
 }
