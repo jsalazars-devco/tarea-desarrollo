@@ -36,6 +36,9 @@ export class AuthController {
             this.authManager.me(token).then((user) => {
                 res.status(200);
                 res.send(user);
+            }).catch(error => {
+                res.status(error.status);
+                res.send(error.message);
             });
         } catch (error: any) {
             res.status(error.status);
@@ -51,7 +54,9 @@ export class AuthController {
                 error.status = 401;
                 throw error;
             }
-            req.user = new TokenRequest(token).getTokenInfo();
+            console.log('antes');
+            req.user = (new TokenRequest(token)).getTokenInfo();
+            console.log('despues');
             next();
         } catch (error: any) {
             res.status(error.status);
