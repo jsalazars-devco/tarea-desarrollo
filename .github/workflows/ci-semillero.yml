@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 env:
-  IMAGE_NAME: "jsalazars-devco/tarea-desarrollo"
+  IMAGE_NAME: "jsalazarsdevco/tarea-desarrollo"
 
 jobs:
   build: 
