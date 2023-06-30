@@ -5,10 +5,10 @@ on:
     branches: ['main']
 
 env:
-  IMAGE_NAME: 'jsalazars-devco/tarea-desarrollo'
+  IMAGE_NAME: 'jsalazarsdevco/tarea-desarrollo'
 
 jobs:
-  build:
+  build: 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -30,7 +30,8 @@ jobs:
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+        
+      
   docker-build:
     runs-on: ubuntu-latest
     needs: build
@@ -51,4 +52,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: user/app:latest
+          tags: ${{ env.IMAGE_NAME }}:latest
