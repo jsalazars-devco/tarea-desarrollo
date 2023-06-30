@@ -11,7 +11,7 @@ git clone https://github.com/jsalazars-devco/tarea-desarrollo.git
 cd tarea-desarrollo/
 ```
 
-2. Cree el archivo .env y agregue las variables. Mire el archivo [.env.example](https://github.com/jsalazars-devco/tarea-desarrollo/blob/main/.env.example) para más detalles:
+2. Modifique el archivo .env y agregue las variables que necesite. Mire el archivo [.env.example](https://github.com/jsalazars-devco/tarea-desarrollo/blob/main/.env.example) para más detalles:
 
 ```
 # Server Configuration
@@ -116,7 +116,11 @@ npm start
 
 # Contenedores
 
-Si desea realizar el despliegue en contenedores, después de realizar el comando `npm run build` corra los siguientes comandos:
+Si desea realizar el despliegue en contenedores, después de realizar el comando `npm run build` realize los siguientes pasos:
+
+1. En el archivo [.env](https://github.com/jsalazars-devco/tarea-desarrollo/blob/main/.env), comente la línea `DB_HOST=localhost` y descomente la línea `# DB_HOST=mysqldb`
+
+2. Corra los siguientes comandos en terminal:
 
 ```
 docker-compose build
